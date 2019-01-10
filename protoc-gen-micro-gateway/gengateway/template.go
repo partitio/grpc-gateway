@@ -400,12 +400,15 @@ var (
 {{$UseRequestContext := .UseRequestContext}}
 {{range $svc := .Services}}
 
-// Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Client registers the http handlers for service {{$svc.GetName}}
-// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "{{$svc.GetName}}Service".
-// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "{{$svc.GetName}}Service"
-// doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "{{$svc.GetName}}Service" to call the correct interceptors.
-func Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Client(ctx context.Context, mux *runtime.ServeMux, client {{$svc.GetName}}Service) error {
+// Register{{$svc.GetName}}{{$.RegisterFuncSuffix}} registers the http handlers for service {{$svc.GetName}} to "mux".
+// The handlers forward requests to the grpc endpoint over "conn".
+// func Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+//  	return Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Client(ctx, mux, New{{$svc.GetName}}Client(conn))
+//}
+
+// Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Service registers the http handlers for service {{$svc.GetName}}
+// to "mux". The handlers forward requests to the micro service endpoint over the given implementation of "{{$svc.GetName}}Service".
+func Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Service(ctx context.Context, mux *runtime.ServeMux, client {{$svc.GetName}}Service) error {
 	{{range $m := $svc.Methods}}
 	{{range $b := $m.Bindings}}
 	mux.Handle({{$b.HTTPMethod | printf "%q"}}, pattern_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
