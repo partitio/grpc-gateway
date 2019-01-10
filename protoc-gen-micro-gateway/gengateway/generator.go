@@ -11,8 +11,8 @@ import (
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
-	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
-	gen "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/generator"
+	"github.com/partitio/grpc-gateway/protoc-gen-micro-gateway/descriptor"
+	gen "github.com/partitio/grpc-gateway/protoc-gen-micro-gateway/generator"
 )
 
 var (
@@ -40,13 +40,12 @@ func New(reg *descriptor.Registry, useRequestContext bool, registerFuncSuffix, p
 	for _, pkgpath := range []string{
 		"io",
 		"net/http",
-		"github.com/grpc-ecosystem/grpc-gateway/runtime",
-		"github.com/grpc-ecosystem/grpc-gateway/utilities",
+		"github.com/partitio/grpc-gateway/runtime",
+		"github.com/partitio/grpc-gateway/utilities",
 		"github.com/golang/protobuf/proto",
 		"golang.org/x/net/context",
-		"google.golang.org/grpc",
 		"google.golang.org/grpc/codes",
-		"google.golang.org/grpc/grpclog",
+		//"google.golang.org/grpc/grpclog",
 		"google.golang.org/grpc/status",
 	} {
 		pkg := descriptor.GoPackage{
@@ -108,7 +107,7 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*plugin.CodeGenerato
 		}
 		ext := filepath.Ext(name)
 		base := strings.TrimSuffix(name, ext)
-		output := fmt.Sprintf("%s.pb.gw.go", base)
+		output := fmt.Sprintf("%s.micro.gw.go", base)
 		files = append(files, &plugin.CodeGeneratorResponse_File{
 			Name:    proto.String(output),
 			Content: proto.String(string(formatted)),

@@ -8,8 +8,8 @@ import (
 	"strings"
 
 	"github.com/golang/protobuf/proto"
+	"github.com/micro/go-micro/metadata"
 	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 )
 
@@ -25,7 +25,7 @@ type ServeMux struct {
 	marshalers             marshalerRegistry
 	incomingHeaderMatcher  HeaderMatcherFunc
 	outgoingHeaderMatcher  HeaderMatcherFunc
-	metadataAnnotators     []func(context.Context, *http.Request) metadata.MD
+	metadataAnnotators     []func(context.Context, *http.Request) metadata.Metadata
 	protoErrorHandler      ProtoErrorHandlerFunc
 }
 
@@ -85,7 +85,7 @@ func WithOutgoingHeaderMatcher(fn HeaderMatcherFunc) ServeMuxOption {
 //
 // This can be used by services that need to read from http.Request and modify gRPC context. A common use case
 // is reading token from cookie and adding it in gRPC context.
-func WithMetadata(annotator func(context.Context, *http.Request) metadata.MD) ServeMuxOption {
+func WithMetadata(annotator func(context.Context, *http.Request) metadata.Metadata) ServeMuxOption {
 	return func(serveMux *ServeMux) {
 		serveMux.metadataAnnotators = append(serveMux.metadataAnnotators, annotator)
 	}

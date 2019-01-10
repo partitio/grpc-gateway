@@ -11,21 +11,23 @@ import (
 	"strings"
 	"time"
 
+	"github.com/micro/go-micro/metadata"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
-	"google.golang.org/grpc/metadata"
+	gmetadata "google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 )
 
-// MetadataHeaderPrefix is the http prefix that represents custom metadata
+// MetadataHeaderPrefix is the http prefix that represents custom gmetadata
 // parameters to or from a gRPC call.
 const MetadataHeaderPrefix = "Grpc-Metadata-"
 
 // MetadataPrefix is prepended to permanent HTTP header keys (as specified
 // by the IANA) when added to the gRPC context.
-const MetadataPrefix = "grpcgateway-"
+// Removed "grpcgateway-"
+const MetadataPrefix = ""
 
-// MetadataTrailerPrefix is prepended to gRPC metadata as it is converted to
+// MetadataTrailerPrefix is prepended to gRPC gmetadata as it is converted to
 // HTTP headers in a response handled by grpc-gateway
 const MetadataTrailerPrefix = "Grpc-Trailer-"
 
@@ -50,14 +52,14 @@ func decodeBinHeader(v string) ([]byte, error) {
 }
 
 /*
-AnnotateContext adds context information such as metadata from the request.
+AnnotateContext adds context information such as gmetadata from the request.
 
 At a minimum, the RemoteAddr is included in the fashion of "X-Forwarded-For",
 except that the forwarded destination is not another HTTP service but rather
 a gRPC service.
 */
 func AnnotateContext(ctx context.Context, mux *ServeMux, req *http.Request) (context.Context, error) {
-	var pairs []string
+	md := metadata.Metadata{}
 	timeout := DefaultContextTimeout
 	if tm := req.Header.Get(metadataGrpcTimeout); tm != "" {
 		var err error
@@ -70,12 +72,8 @@ func AnnotateContext(ctx context.Context, mux *ServeMux, req *http.Request) (con
 	for key, vals := range req.Header {
 		for _, val := range vals {
 			key = textproto.CanonicalMIMEHeaderKey(key)
-			// For backwards-compatibility, pass through 'authorization' header with no prefix.
-			if key == "Authorization" {
-				pairs = append(pairs, "authorization", val)
-			}
 			if h, ok := mux.incomingHeaderMatcher(key); ok {
-				// Handles "-bin" metadata in grpc, since grpc will do another base64
+				// Handles "-bin" gmetadata in grpc, since grpc will do another base64
 				// encode before sending to server, we need to decode it first.
 				if strings.HasSuffix(key, metadataHeaderBinarySuffix) {
 					b, err := decodeBinHeader(val)
@@ -85,22 +83,22 @@ func AnnotateContext(ctx context.Context, mux *ServeMux, req *http.Request) (con
 
 					val = string(b)
 				}
-				pairs = append(pairs, h, val)
+				md = addToMetadata(md, h, val)
 			}
 		}
 	}
 	if host := req.Header.Get(xForwardedHost); host != "" {
-		pairs = append(pairs, strings.ToLower(xForwardedHost), host)
+		md = addToMetadata(md, xForwardedHost, host)
 	} else if req.Host != "" {
-		pairs = append(pairs, strings.ToLower(xForwardedHost), req.Host)
+		md = addToMetadata(md, xForwardedHost, req.Host)
 	}
 
 	if addr := req.RemoteAddr; addr != "" {
 		if remoteIP, _, err := net.SplitHostPort(addr); err == nil {
 			if fwd := req.Header.Get(xForwardedFor); fwd == "" {
-				pairs = append(pairs, strings.ToLower(xForwardedFor), remoteIP)
+				md = addToMetadata(md, xForwardedFor, remoteIP)
 			} else {
-				pairs = append(pairs, strings.ToLower(xForwardedFor), fmt.Sprintf("%s, %s", fwd, remoteIP))
+				md = addToMetadata(md, xForwardedFor, fmt.Sprintf("%s, %s", fwd, remoteIP))
 			}
 		} else {
 			grpclog.Infof("invalid remote addr: %s", addr)
@@ -110,20 +108,19 @@ func AnnotateContext(ctx context.Context, mux *ServeMux, req *http.Request) (con
 	if timeout != 0 {
 		ctx, _ = context.WithTimeout(ctx, timeout)
 	}
-	if len(pairs) == 0 {
+	if len(md) == 0 {
 		return ctx, nil
 	}
-	md := metadata.Pairs(pairs...)
 	for _, mda := range mux.metadataAnnotators {
-		md = metadata.Join(md, mda(ctx, req))
+		md = mergeMetadata(md, mda(ctx, req))
 	}
-	return metadata.NewOutgoingContext(ctx, md), nil
+	return metadata.NewContext(ctx, md), nil
 }
 
-// ServerMetadata consists of metadata sent from gRPC server.
+// ServerMetadata consists of gmetadata sent from gRPC server.
 type ServerMetadata struct {
-	HeaderMD  metadata.MD
-	TrailerMD metadata.MD
+	HeaderMD  gmetadata.MD
+	TrailerMD gmetadata.MD
 }
 
 type serverMetadataKey struct{}
@@ -207,4 +204,24 @@ func isPermanentHTTPHeader(hdr string) bool {
 		return true
 	}
 	return false
+}
+
+func addToMetadata(metadata metadata.Metadata, key string, val string) metadata.Metadata {
+	if v, ok := metadata[key]; ok {
+		metadata[key] = v + "," + val
+		return metadata
+	}
+	metadata[key] = val
+	return metadata
+}
+
+func mergeMetadata(m1 metadata.Metadata, m2 metadata.Metadata) metadata.Metadata {
+	for k1, v1 := range m1 {
+		if v, ok := m2[k1]; ok {
+			m2[k1] = v + "," + v1
+		} else {
+			m2[k1] = v1
+		}
+	}
+	return m2
 }

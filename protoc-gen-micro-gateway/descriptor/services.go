@@ -7,7 +7,7 @@ import (
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
 	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
-	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/httprule"
+	"github.com/partitio/grpc-gateway/protoc-gen-micro-gateway/httprule"
 	options "google.golang.org/genproto/googleapis/api/annotations"
 )
 

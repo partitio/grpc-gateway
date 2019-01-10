@@ -7,8 +7,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	"github.com/grpc-ecosystem/grpc-gateway/utilities"
+	"github.com/partitio/grpc-gateway/runtime"
+	"github.com/partitio/grpc-gateway/utilities"
 )
 
 func TestMuxServeHTTP(t *testing.T) {
@@ -243,7 +243,7 @@ var defaultHeaderMatcherTests = []struct {
 	{
 		"permanent HTTP header should return prefixed",
 		"Accept",
-		"grpcgateway-Accept",
+		"Accept",
 		true,
 	},
 	{

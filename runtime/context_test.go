@@ -3,13 +3,12 @@ package runtime_test
 import (
 	"context"
 	"encoding/base64"
+	"github.com/micro/go-micro/metadata"
+	"github.com/partitio/grpc-gateway/runtime"
 	"net/http"
 	"reflect"
 	"testing"
 	"time"
-
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	"google.golang.org/grpc/metadata"
 )
 
 const (
@@ -29,7 +28,7 @@ func TestAnnotateContext_WorksWithEmpty(t *testing.T) {
 		t.Errorf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
 		return
 	}
-	md, ok := metadata.FromOutgoingContext(annotated)
+	md, ok := metadata.FromContext(annotated)
 	if !ok || len(md) != emptyForwardMetaCount {
 		t.Errorf("Expected %d metadata items in context; got %v", emptyForwardMetaCount, md)
 	}
@@ -51,21 +50,18 @@ func TestAnnotateContext_ForwardsGrpcMetadata(t *testing.T) {
 		t.Errorf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
 		return
 	}
-	md, ok := metadata.FromOutgoingContext(annotated)
-	if got, want := len(md), emptyForwardMetaCount+4; !ok || got != want {
+	md, ok := metadata.FromContext(annotated)
+	if got, want := len(md), emptyForwardMetaCount+3; !ok || got != want {
 		t.Errorf("metadata items in context = %d want %d: %v", got, want, md)
 	}
-	if got, want := md["foobar"], []string{"Value1"}; !reflect.DeepEqual(got, want) {
-		t.Errorf(`md["grpcgateway-foobar"] = %q; want %q`, got, want)
+	if got, want := md["Foobar"], "Value1"; !reflect.DeepEqual(got, want) {
+		t.Errorf(`md["Foobar"] = %q; want %q`, got, want)
 	}
-	if got, want := md["foo-baz"], []string{"Value2", "Value3"}; !reflect.DeepEqual(got, want) {
-		t.Errorf(`md["grpcgateway-foo-baz"] = %q want %q`, got, want)
+	if got, want := md["Foo-Baz"], "Value2,Value3"; !reflect.DeepEqual(got, want) {
+		t.Errorf(`md["Foo-Baz"] = %q want %q`, got, want)
 	}
-	if got, want := md["grpcgateway-authorization"], []string{"Token 1234567890"}; !reflect.DeepEqual(got, want) {
-		t.Errorf(`md["grpcgateway-authorization"] = %q want %q`, got, want)
-	}
-	if got, want := md["authorization"], []string{"Token 1234567890"}; !reflect.DeepEqual(got, want) {
-		t.Errorf(`md["authorization"] = %q want %q`, got, want)
+	if got, want := md["Authorization"], "Token 1234567890"; !reflect.DeepEqual(got, want) {
+		t.Errorf(`md["Authorization"] = %q want %q`, got, want)
 	}
 }
 
@@ -84,11 +80,11 @@ func TestAnnotateContext_ForwardGrpcBinaryMetadata(t *testing.T) {
 		t.Errorf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
 		return
 	}
-	md, ok := metadata.FromOutgoingContext(annotated)
+	md, ok := metadata.FromContext(annotated)
 	if !ok || len(md) != emptyForwardMetaCount+1 {
 		t.Errorf("Expected %d metadata items in context; got %v", emptyForwardMetaCount+1, md)
 	}
-	if got, want := md["test-bin"], []string{string(binData)}; !reflect.DeepEqual(got, want) {
+	if got, want := md["Test-Bin"], string(binData); !reflect.DeepEqual(got, want) {
 		t.Errorf(`md["test-bin"] = %q want %q`, got, want)
 	}
 }
@@ -107,15 +103,15 @@ func TestAnnotateContext_XForwardedFor(t *testing.T) {
 		t.Errorf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
 		return
 	}
-	md, ok := metadata.FromOutgoingContext(annotated)
+	md, ok := metadata.FromContext(annotated)
 	if !ok || len(md) != emptyForwardMetaCount+1 {
 		t.Errorf("Expected %d metadata items in context; got %v", emptyForwardMetaCount+1, md)
 	}
-	if got, want := md["x-forwarded-host"], []string{"bar.foo.example.com"}; !reflect.DeepEqual(got, want) {
+	if got, want := md["X-Forwarded-Host"], "bar.foo.example.com"; !reflect.DeepEqual(got, want) {
 		t.Errorf(`md["host"] = %v; want %v`, got, want)
 	}
 	// Note: it must be in order client, proxy1, proxy2
-	if got, want := md["x-forwarded-for"], []string{"192.0.2.100, 192.0.2.200"}; !reflect.DeepEqual(got, want) {
+	if got, want := md["X-Forwarded-For"], "192.0.2.100, 192.0.2.200"; !reflect.DeepEqual(got, want) {
 		t.Errorf(`md["x-forwarded-for"] = %v want %v`, got, want)
 	}
 }
@@ -196,9 +192,13 @@ func TestAnnotateContext_SupportsTimeouts(t *testing.T) {
 	}
 }
 func TestAnnotateContext_SupportsCustomAnnotators(t *testing.T) {
-	md1 := func(context.Context, *http.Request) metadata.MD { return metadata.New(map[string]string{"foo": "bar"}) }
-	md2 := func(context.Context, *http.Request) metadata.MD { return metadata.New(map[string]string{"baz": "qux"}) }
-	expected := metadata.New(map[string]string{"foo": "bar", "baz": "qux"})
+	md1 := func(context.Context, *http.Request) metadata.Metadata {
+		return metadata.Metadata(map[string]string{"foo": "bar"})
+	}
+	md2 := func(context.Context, *http.Request) metadata.Metadata {
+		return metadata.Metadata(map[string]string{"baz": "qux"})
+	}
+	expected := metadata.Metadata(map[string]string{"foo": "bar", "baz": "qux"})
 	request, err := http.NewRequest("GET", "http://example.com", nil)
 	if err != nil {
 		t.Fatalf(`http.NewRequest("GET", "http://example.com", nil failed with %v; want success`, err)
@@ -208,10 +208,10 @@ func TestAnnotateContext_SupportsCustomAnnotators(t *testing.T) {
 		t.Errorf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
 		return
 	}
-	actual, _ := metadata.FromOutgoingContext(annotated)
+	actual, _ := metadata.FromContext(annotated)
 	for key, e := range expected {
 		if a, ok := actual[key]; !ok || !reflect.DeepEqual(e, a) {
-			t.Errorf("metadata.MD[%s] = %v; want %v", key, a, e)
+			t.Errorf("metadata.Metadata[%s] = %v; want %v", key, a, e)
 		}
 	}
 }

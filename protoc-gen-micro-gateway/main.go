@@ -3,7 +3,7 @@
 // HTTP/1 requests gRPC invocation.
 // You rarely need to run this program directly. Instead, put this program
 // into your $PATH with a name "protoc-gen-grpc-gateway" and run
-//   protoc --grpc-gateway_out=output_directory path/to/input.proto
+//   protoc --micro-gateway_out=output_directory path/to/input.proto
 //
 // See README.md for more details.
 package main
@@ -17,9 +17,9 @@ import (
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
-	"github.com/grpc-ecosystem/grpc-gateway/codegenerator"
-	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
-	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/gengateway"
+	"github.com/partitio/grpc-gateway/codegenerator"
+	"github.com/partitio/grpc-gateway/protoc-gen-micro-gateway/descriptor"
+	"github.com/partitio/grpc-gateway/protoc-gen-micro-gateway/gengateway"
 )
 
 var (

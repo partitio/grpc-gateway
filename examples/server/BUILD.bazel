@@ -13,7 +13,7 @@ go_library(
         "responsebody.go",
         "unannotatedecho.go",
     ],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/examples/server",
+    importpath = "github.com/partitio/grpc-gateway/examples/server",
     deps = [
         "//examples/proto/examplepb:go_default_library",
         "//examples/proto/sub:go_default_library",

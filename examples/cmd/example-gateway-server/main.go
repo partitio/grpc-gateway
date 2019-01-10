@@ -9,7 +9,7 @@ import (
 	"flag"
 
 	"github.com/golang/glog"
-	"github.com/grpc-ecosystem/grpc-gateway/examples/gateway"
+	"github.com/partitio/grpc-gateway/examples/gateway"
 )
 
 var (

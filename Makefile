@@ -3,7 +3,7 @@
 # You don't have to rebuild these targets by yourself unless you develop
 # grpc-gateway itself.
 
-PKG=github.com/grpc-ecosystem/grpc-gateway
+PKG=github.com/partitio/grpc-gateway
 GO_PLUGIN=bin/protoc-gen-go
 GO_PROTOBUF_REPO=github.com/golang/protobuf
 GO_PLUGIN_PKG=$(GO_PROTOBUF_REPO)/protoc-gen-go
@@ -16,29 +16,29 @@ SWAGGER_PLUGIN_SRC= utilities/doc.go \
 		    protoc-gen-swagger/genswagger/template.go \
 		    protoc-gen-swagger/main.go
 SWAGGER_PLUGIN_PKG=$(PKG)/protoc-gen-swagger
-GATEWAY_PLUGIN=bin/protoc-gen-grpc-gateway
-GATEWAY_PLUGIN_PKG=$(PKG)/protoc-gen-grpc-gateway
+GATEWAY_PLUGIN=bin/protoc-gen-micro-gateway
+GATEWAY_PLUGIN_PKG=$(PKG)/protoc-gen-micro-gateway
 GATEWAY_PLUGIN_SRC= utilities/doc.go \
 		    utilities/pattern.go \
 		    utilities/trie.go \
-		    protoc-gen-grpc-gateway \
-		    protoc-gen-grpc-gateway/descriptor \
-		    protoc-gen-grpc-gateway/descriptor/registry.go \
-		    protoc-gen-grpc-gateway/descriptor/services.go \
-		    protoc-gen-grpc-gateway/descriptor/types.go \
-		    protoc-gen-grpc-gateway/descriptor/grpc_api_configuration.go \
-		    protoc-gen-grpc-gateway/descriptor/grpc_api_service.go \
-		    protoc-gen-grpc-gateway/generator \
-		    protoc-gen-grpc-gateway/generator/generator.go \
-		    protoc-gen-grpc-gateway/gengateway \
-		    protoc-gen-grpc-gateway/gengateway/doc.go \
-		    protoc-gen-grpc-gateway/gengateway/generator.go \
-		    protoc-gen-grpc-gateway/gengateway/template.go \
-		    protoc-gen-grpc-gateway/httprule \
-		    protoc-gen-grpc-gateway/httprule/compile.go \
-		    protoc-gen-grpc-gateway/httprule/parse.go \
-		    protoc-gen-grpc-gateway/httprule/types.go \
-		    protoc-gen-grpc-gateway/main.go
+		    protoc-gen-micro-gateway \
+		    protoc-gen-micro-gateway/descriptor \
+		    protoc-gen-micro-gateway/descriptor/registry.go \
+		    protoc-gen-micro-gateway/descriptor/services.go \
+		    protoc-gen-micro-gateway/descriptor/types.go \
+		    protoc-gen-micro-gateway/descriptor/grpc_api_configuration.go \
+		    protoc-gen-micro-gateway/descriptor/grpc_api_service.go \
+		    protoc-gen-micro-gateway/generator \
+		    protoc-gen-micro-gateway/generator/generator.go \
+		    protoc-gen-micro-gateway/gengateway \
+		    protoc-gen-micro-gateway/gengateway/doc.go \
+		    protoc-gen-micro-gateway/gengateway/generator.go \
+		    protoc-gen-micro-gateway/gengateway/template.go \
+		    protoc-gen-micro-gateway/httprule \
+		    protoc-gen-micro-gateway/httprule/compile.go \
+		    protoc-gen-micro-gateway/httprule/parse.go \
+		    protoc-gen-micro-gateway/httprule/types.go \
+		    protoc-gen-micro-gateway/main.go
 GATEWAY_PLUGIN_FLAGS?=
 SWAGGER_PLUGIN_FLAGS?=
 
@@ -75,7 +75,7 @@ EXAMPLES=examples/proto/examplepb/echo_service.proto \
 	 examples/proto/examplepb/response_body_service.proto
 
 EXAMPLE_SVCSRCS=$(EXAMPLES:.proto=.pb.go)
-EXAMPLE_GWSRCS=$(EXAMPLES:.proto=.pb.gw.go)
+EXAMPLE_GWSRCS=$(EXAMPLES:.proto=.micro.gw.go)
 EXAMPLE_SWAGGERSRCS=$(SWAGGER_EXAMPLES:.proto=.swagger.json)
 EXAMPLE_DEPS=examples/proto/pathenum/path_enum.proto examples/proto/sub/message.proto examples/proto/sub2/message.proto
 EXAMPLE_DEPSRCS=$(EXAMPLE_DEPS:.proto=.pb.go)
@@ -149,7 +149,7 @@ $(EXAMPLE_DEPSRCS): $(GO_PLUGIN) $(EXAMPLE_DEPS)
 
 $(EXAMPLE_GWSRCS): ADDITIONAL_GW_FLAGS:=$(ADDITIONAL_GW_FLAGS),grpc_api_configuration=examples/proto/examplepb/unannotated_echo_service.yaml
 $(EXAMPLE_GWSRCS): $(GATEWAY_PLUGIN) $(EXAMPLES)
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GATEWAY_PLUGIN) --grpc-gateway_out=logtostderr=true,$(PKGMAP)$(ADDITIONAL_GW_FLAGS):. $(EXAMPLES)
+	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GATEWAY_PLUGIN) --micro-gateway_out=logtostderr=true,$(PKGMAP)$(ADDITIONAL_GW_FLAGS):. $(EXAMPLES)
 
 $(EXAMPLE_SWAGGERSRCS): ADDITIONAL_SWG_FLAGS:=$(ADDITIONAL_SWG_FLAGS),grpc_api_configuration=examples/proto/examplepb/unannotated_echo_service.yaml
 $(EXAMPLE_SWAGGERSRCS): $(SWAGGER_PLUGIN) $(SWAGGER_EXAMPLES)
@@ -197,11 +197,11 @@ changelog:
 lint:
 	golint --set_exit_status $(PKG)/runtime
 	golint --set_exit_status $(PKG)/utilities/...
-	golint --set_exit_status $(PKG)/protoc-gen-grpc-gateway/...
+	golint --set_exit_status $(PKG)/protoc-gen-micro-gateway/...
 	golint --set_exit_status $(PKG)/protoc-gen-swagger/...
 	go vet $(PKG)/runtime || true
 	go vet $(PKG)/utilities/...
-	go vet $(PKG)/protoc-gen-grpc-gateway/...
+	go vet $(PKG)/protoc-gen-micro-gateway/...
 	go vet $(PKG)/protoc-gen-swagger/...
 
 clean:

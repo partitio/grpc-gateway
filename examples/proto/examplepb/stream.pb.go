@@ -7,7 +7,7 @@ import proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"
 import empty "github.com/golang/protobuf/ptypes/empty"
-import sub "github.com/grpc-ecosystem/grpc-gateway/examples/proto/sub"
+import sub "github.com/partitio/grpc-gateway/examples/proto/sub"
 import _ "google.golang.org/genproto/googleapis/api/annotations"
 
 import (
@@ -258,10 +258,10 @@ var _StreamService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("examples/proto/examplepb/stream.proto", fileDescriptor_stream_0929397c5d8d3331)
+	proto.RegisterFile("examples/proto/examplepb/stream.proto", fileDescriptor_stream_c8bbbb01c5cf053e)
 }
 
-var fileDescriptor_stream_0929397c5d8d3331 = []byte{
+var fileDescriptor_stream_c8bbbb01c5cf053e = []byte{
 	// 319 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x90, 0xb1, 0x4e, 0xc3, 0x30,
 	0x10, 0x86, 0x15, 0x40, 0x08, 0x8c, 0x58, 0x3c, 0x30, 0x04, 0xa4, 0x42, 0x05, 0xa2, 0x30, 0xd8,
