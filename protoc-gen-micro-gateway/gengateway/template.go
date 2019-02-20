@@ -213,7 +213,7 @@ var _ = utilities.NewDoubleArray
 
 	_ = template.Must(handlerTemplate.New("request-func-signature").Parse(strings.Replace(`
 {{if .Method.GetServerStreaming}}
-func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx context.Context, marshaler runtime.Marshaler, client {{.Method.Service.GetName}}Service, req *http.Request, pathParams map[string]string) ({{.Method.Service.GetName}}_{{.Method.GetName}}Client, error)
+func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx context.Context, marshaler runtime.Marshaler, client {{.Method.Service.GetName}}Service, req *http.Request, pathParams map[string]string) ({{.Method.Service.GetName}}_{{.Method.GetName}}Service, error)
 {{else}}
 func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx context.Context, marshaler runtime.Marshaler, client {{.Method.Service.GetName}}Service, req *http.Request, pathParams map[string]string) (proto.Message, error)
 {{end}}`, "\n", "", -1)))
@@ -222,7 +222,7 @@ func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx cont
 {{template "request-func-signature" .}} {
 	stream, err := client.{{.Method.GetName}}(ctx)
 	if err != nil {
-		grpclog.Infof("Failed to start streaming: %v", err)
+		// grpclog.Infof("Failed to start streaming: %v", err)
 		return nil, err
 	}
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -237,17 +237,17 @@ func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx cont
 			break
 		}
 		if err != nil {
-			grpclog.Infof("Failed to decode request: %v", err)
+			// grpclog.Infof("Failed to decode request: %v", err)
 			return nil, status.Errorf(codes.InvalidArgument, "%v", err)
 		}
 		if err = stream.Send(&protoReq); err != nil {
-			grpclog.Infof("Failed to send request: %v", err)
+			// grpclog.Infof("Failed to send request: %v", err)
 			return nil, err
 		}
 	}
 
-	if err := stream.CloseSend(); err != nil {
-		grpclog.Infof("Failed to terminate client stream: %v", err)
+	if err := stream.Close(); err != nil {
+		// grpclog.Infof("Failed to terminate client stream: %v", err)
 		return nil, err
 	}
 {{if .Method.GetServerStreaming}}
@@ -349,7 +349,7 @@ var (
 {{template "request-func-signature" .}} {
 	stream, err := client.{{.Method.GetName}}(ctx)
 	if err != nil {
-		grpclog.Infof("Failed to start streaming: %v", err)
+		// grpclog.Infof("Failed to start streaming: %v", err)
 		return nil, err
 	}
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -364,18 +364,18 @@ var (
 			return err
 		}
 		if err != nil {
-			grpclog.Infof("Failed to decode request: %v", err)
+			// grpclog.Infof("Failed to decode request: %v", err)
 			return err
 		}
 		if err := stream.Send(&protoReq); err != nil {
-			grpclog.Infof("Failed to send request: %v", err)
+			// grpclog.Infof("Failed to send request: %v", err)
 			return err
 		}
 		return nil
 	}
 	if err := handleSend(); err != nil {
-		if cerr := stream.CloseSend(); cerr != nil {
-			grpclog.Infof("Failed to terminate client stream: %v", cerr)
+		if cerr := stream.Close(); cerr != nil {
+			// grpclog.Infof("Failed to terminate client stream: %v", cerr)
 		}
 		if err == io.EOF {
 			return stream, nil
@@ -388,8 +388,8 @@ var (
 				break
 			}
 		}
-		if err := stream.CloseSend(); err != nil {
-			grpclog.Infof("Failed to terminate client stream: %v", err)
+		if err := stream.Close(); err != nil {
+			// grpclog.Infof("Failed to terminate client stream: %v", err)
 		}
 	}()
 	return stream, nil
