@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"context"
+	"github.com/micro/go-micro/metadata"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/grpc/status"
@@ -44,18 +45,15 @@ func DefaultHTTPProtoErrorHandler(ctx context.Context, mux *ServeMux, marshaler 
 		return
 	}
 
-	md, ok := ServerMetadataFromContext(ctx)
+	md, ok := metadata.FromContext(ctx)
 	if !ok {
 		grpclog.Infof("Failed to extract ServerMetadata from context")
 	}
 
 	handleForwardResponseServerMetadata(w, mux, md)
-	handleForwardResponseTrailerHeader(w, md)
 	st := HTTPStatusFromCode(s.Code())
 	w.WriteHeader(st)
 	if _, err := w.Write(buf); err != nil {
 		grpclog.Infof("Failed to write response: %v", err)
 	}
-
-	handleForwardResponseTrailer(w, md)
 }

@@ -3,7 +3,7 @@
 Thank you for your contribution to grpc-gateway.
 Here's the recommended process of contribution.
 
-1. `go get github.com/partitio/grpc-gateway/protoc-gen-grpc-gateway`
+1. `go get github.com/partitio/grpc-gateway/protoc-gen-micro-gateway`
 2. `cd $GOPATH/src/github.com/partitio/grpc-gateway`
 3. hack, hack, hack...
 4. Make sure that your change follows best practices in Go

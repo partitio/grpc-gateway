@@ -5,8 +5,10 @@
 
 PKG=github.com/partitio/grpc-gateway
 GO_PLUGIN=bin/protoc-gen-go
+MICRO_PLUGIN=bin/protoc-gen-micro
 GO_PROTOBUF_REPO=github.com/golang/protobuf
 GO_PLUGIN_PKG=$(GO_PROTOBUF_REPO)/protoc-gen-go
+MICRO_PLUGIN_PKG=github.com/micro/protoc-gen-micro
 GO_PTYPES_ANY_PKG=$(GO_PROTOBUF_REPO)/ptypes/any
 SWAGGER_PLUGIN=bin/protoc-gen-swagger
 SWAGGER_PLUGIN_SRC= utilities/doc.go \
@@ -75,6 +77,7 @@ EXAMPLES=examples/proto/examplepb/echo_service.proto \
 	 examples/proto/examplepb/response_body_service.proto
 
 EXAMPLE_SVCSRCS=$(EXAMPLES:.proto=.pb.go)
+EXAMPLE_MICROSRCS=$(EXAMPLES:.proto=.micro.go)
 EXAMPLE_GWSRCS=$(EXAMPLES:.proto=.micro.gw.go)
 EXAMPLE_SWAGGERSRCS=$(SWAGGER_EXAMPLES:.proto=.swagger.json)
 EXAMPLE_DEPS=examples/proto/pathenum/path_enum.proto examples/proto/sub/message.proto examples/proto/sub2/message.proto
@@ -128,11 +131,15 @@ $(GO_PLUGIN):
 	dep ensure -vendor-only
 	go build -o $@ ./vendor/$(GO_PLUGIN_PKG)
 
+$(MICRO_PLUGIN):
+	dep ensure -vendor-only
+	go build -o $@ ./vendor/$(MICRO_PLUGIN_PKG)
+
 $(RUNTIME_GO): $(RUNTIME_PROTO) $(GO_PLUGIN)
-	protoc -I $(PROTOC_INC_PATH) --plugin=$(GO_PLUGIN) -I $(GOPATH)/src/$(GO_PTYPES_ANY_PKG) -I. --go_out=$(PKGMAP):. $(RUNTIME_PROTO)
+	protoc -I $(PROTOC_INC_PATH) -I${GOPATH}/src --plugin=$(GO_PLUGIN) -I $(GOPATH)/src/$(GO_PTYPES_ANY_PKG) -I. --go_out=$(PKGMAP):. $(RUNTIME_PROTO)
 
 $(OPENAPIV2_GO): $(OPENAPIV2_PROTO) $(GO_PLUGIN)
-	protoc -I $(PROTOC_INC_PATH) --plugin=$(GO_PLUGIN) -I. --go_out=$(PKGMAP):$(GOPATH)/src $(OPENAPIV2_PROTO)
+	protoc -I $(PROTOC_INC_PATH) -I${GOPATH}/src --plugin=$(GO_PLUGIN) -I. --go_out=$(PKGMAP):$(GOPATH)/src $(OPENAPIV2_PROTO)
 
 $(GATEWAY_PLUGIN): $(RUNTIME_GO) $(GATEWAY_PLUGIN_SRC)
 	go build -o $@ $(GATEWAY_PLUGIN_PKG)
@@ -142,9 +149,13 @@ $(SWAGGER_PLUGIN): $(SWAGGER_PLUGIN_SRC) $(OPENAPIV2_GO)
 
 $(EXAMPLE_SVCSRCS): $(GO_PLUGIN) $(EXAMPLES)
 	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --go_out=$(PKGMAP),plugins=grpc:. $(EXAMPLES)
+
+$(EXAMPLE_MICROSRCS): $(MICRO_PLUGIN) $(EXAMPLES)
+	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(MICRO_PLUGIN) --micro_out=$(PKGMAP),plugins=grpc:. $(EXAMPLES)
+
 $(EXAMPLE_DEPSRCS): $(GO_PLUGIN) $(EXAMPLE_DEPS)
 	mkdir -p $(OUTPUT_DIR)
-	protoc -I $(PROTOC_INC_PATH) -I. --plugin=$(GO_PLUGIN) --go_out=$(PKGMAP),plugins=grpc:$(OUTPUT_DIR) $(@:.pb.go=.proto)
+	protoc -I $(PROTOC_INC_PATH) -I${GOPATH}/src -I. --plugin=$(GO_PLUGIN) --go_out=$(PKGMAP),plugins=grpc:$(OUTPUT_DIR) $(@:.pb.go=.proto)
 	cp $(OUTPUT_DIR)/$(PKG)/$@ $@ || cp $(OUTPUT_DIR)/$@ $@
 
 $(EXAMPLE_GWSRCS): ADDITIONAL_GW_FLAGS:=$(ADDITIONAL_GW_FLAGS),grpc_api_configuration=examples/proto/examplepb/unannotated_echo_service.yaml
@@ -176,24 +187,24 @@ $(RESPONSE_BODY_EXAMPLE_SRCS): $(RESPONSE_BODY_EXAMPLE_SPEC)
 	@rm -f $(EXAMPLE_CLIENT_DIR)/responsebody/README.md \
 		$(EXAMPLE_CLIENT_DIR)/responsebody/git_push.sh
 
-examples: $(EXAMPLE_DEPSRCS) $(EXAMPLE_SVCSRCS) $(EXAMPLE_GWSRCS) $(EXAMPLE_SWAGGERSRCS) $(EXAMPLE_CLIENT_SRCS)
+examples: $(EXAMPLE_MICROSRCS) $(EXAMPLE_DEPSRCS) $(EXAMPLE_SVCSRCS) $(EXAMPLE_MICROSRCS) $(EXAMPLE_GWSRCS) $(EXAMPLE_SWAGGERSRCS) $(EXAMPLE_CLIENT_SRCS)
 test: examples
 	go test -race $(PKG)/...
 	go test -race $(PKG)/examples/integration -args -network=unix -endpoint=test.sock
-changelog:
-	docker run --rm \
-		--interactive \
-		--tty \
-		-e "CHANGELOG_GITHUB_TOKEN=${CHANGELOG_GITHUB_TOKEN}" \
-		-v "$(PWD):/usr/local/src/your-app" \
-		ferrarimarco/github-changelog-generator:1.14.3 \
-				-u grpc-ecosystem \
-				-p grpc-gateway \
-				--author \
-				--compare-link \
-				--github-site=https://grpc-ecosystem.github.io/grpc-gateway \
-				--unreleased-label "**Next release**" \
-				--future-release=v1.6.3
+#changelog:
+#	docker run --rm \
+#		--interactive \
+#		--tty \
+#		-e "CHANGELOG_GITHUB_TOKEN=${CHANGELOG_GITHUB_TOKEN}" \
+#		-v "$(PWD):/usr/local/src/your-app" \
+#		ferrarimarco/github-changelog-generator:1.14.3 \
+#				-u grpc-ecosystem \
+#				-p grpc-gateway \
+#				--author \
+#				--compare-link \
+#				--github-site=https://grpc-ecosystem.github.io/grpc-gateway \
+#				--unreleased-label "**Next release**" \
+#				--future-release=v1.6.3
 lint:
 	golint --set_exit_status $(PKG)/runtime
 	golint --set_exit_status $(PKG)/utilities/...
@@ -208,8 +219,9 @@ clean:
 	rm -f $(GATEWAY_PLUGIN) $(SWAGGER_PLUGIN)
 distclean: clean
 	rm -f $(GO_PLUGIN)
+	rm -f $(MICRO_PLUGIN)
 realclean: distclean
-	rm -f $(EXAMPLE_SVCSRCS) $(EXAMPLE_DEPSRCS)
+	rm -f $(EXAMPLE_SVCSRCS) $(EXAMPLE_MICROSRCS) $(EXAMPLE_DEPSRCS)
 	rm -f $(EXAMPLE_GWSRCS)
 	rm -f $(EXAMPLE_SWAGGERSRCS)
 	rm -f $(EXAMPLE_CLIENT_SRCS)

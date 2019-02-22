@@ -6,10 +6,10 @@
   ```sh
   go get -u github.com/partitio/grpc-gateway
   ```
-- [ ] Delete the `protoc-gen-grpc-gateway` and `protoc-gen-swagger` binary from your `PATH`,
+- [ ] Delete the `protoc-gen-micro-gateway` and `protoc-gen-swagger` binary from your `PATH`,
   and reinstall the latest versions:
   ```sh
-  go get -u github.com/partitio/grpc-gateway/protoc-gen-grpc-gateway
+  go get -u github.com/partitio/grpc-gateway/protoc-gen-micro-gateway
   go get -u github.com/partitio/grpc-gateway/protoc-gen-swagger
   ```
   

@@ -33,7 +33,7 @@ From an elevated cmd.exe prompt set the GOPATH variable in windows and add the `
 
 Then `go get -u -v` the following packages:
 
-    go get -u -v github.com/partitio/grpc-gateway/protoc-gen-grpc-gateway
+    go get -u -v github.com/partitio/grpc-gateway/protoc-gen-micro-gateway
     go get -u -v github.com/partitio/grpc-gateway/protoc-gen-swagger
     go get -u -v github.com/golang/protobuf/protoc-gen-go
 
@@ -43,7 +43,7 @@ This will probably fail with similar output.
     # cd .; git clone https://github.com/partitio/grpc-gateway C:\path\to\your\cygwin\home\user\go\src\github.com\grpc-ecosystem\grpc-gateway
     Cloning into 'C:\path\to\your\cygwin\home\user\go\src\github.com\grpc-ecosystem\grpc-gateway'...
     fatal: Invalid path '/home/user/go/C:\path\to\your\cygwin\home\user\go\src\github.com\grpc-ecosystem\grpc-gateway': No such file or directory
-    package github.com/partitio/grpc-gateway/protoc-gen-grpc-gateway: exit status 128
+    package github.com/partitio/grpc-gateway/protoc-gen-micro-gateway: exit status 128
 
 To fix this you need to run the `go get -u -v` commands and look for all lines starting with `# cd .; `.
 Copy and paste these lines into your shell and change the clone destination directories.

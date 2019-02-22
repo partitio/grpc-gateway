@@ -83,7 +83,7 @@ The following is equivalent to the basic [usage example](usage.html) but without
      path/to/your_service.proto
    ```
    
-   This will generate a reverse proxy `path/to/your_service.pb.gw.go` that is identical to the one produced for the annotated proto.
+   This will generate a reverse proxy `path/to/your_service.micro.gw.go` that is identical to the one produced for the annotated proto.
  
    Note: After generating the code for each of the stubs, in order to build the code, you will want to run ```go get .``` from the directory containing the stubs.
 

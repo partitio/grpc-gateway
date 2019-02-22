@@ -1,8 +1,8 @@
-// Command protoc-gen-grpc-gateway is a plugin for Google protocol buffer
+// Command protoc-gen-micro-gateway is a plugin for Google protocol buffer
 // compiler to generate a reverse-proxy, which converts incoming RESTful
 // HTTP/1 requests gRPC invocation.
 // You rarely need to run this program directly. Instead, put this program
-// into your $PATH with a name "protoc-gen-grpc-gateway" and run
+// into your $PATH with a name "protoc-gen-micro-gateway" and run
 //   protoc --micro-gateway_out=output_directory path/to/input.proto
 //
 // See README.md for more details.

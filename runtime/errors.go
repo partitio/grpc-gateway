@@ -7,6 +7,7 @@ import (
 
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes/any"
+	"github.com/micro/go-micro/metadata"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/grpc/status"
@@ -65,7 +66,7 @@ var (
 )
 
 type errorBody struct {
-	Error   string     `protobuf:"bytes,1,name=error" json:"error"`
+	Error string `protobuf:"bytes,1,name=error" json:"error"`
 	// This is to make the error more compatible with users that expect errors to be Status objects:
 	// https://github.com/grpc/grpc/blob/master/src/proto/grpc/status/status.proto
 	// It should be the exact same message as the Error field.
@@ -113,20 +114,17 @@ func DefaultHTTPError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w
 		return
 	}
 
-	md, ok := ServerMetadataFromContext(ctx)
+	md, ok := metadata.FromContext(ctx)
 	if !ok {
 		grpclog.Infof("Failed to extract ServerMetadata from context")
 	}
 
 	handleForwardResponseServerMetadata(w, mux, md)
-	handleForwardResponseTrailerHeader(w, md)
 	st := HTTPStatusFromCode(s.Code())
 	w.WriteHeader(st)
 	if _, err := w.Write(buf); err != nil {
 		grpclog.Infof("Failed to write response: %v", err)
 	}
-
-	handleForwardResponseTrailer(w, md)
 }
 
 // DefaultOtherErrorHandler is the default implementation of OtherErrorHandler.

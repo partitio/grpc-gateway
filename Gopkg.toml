@@ -1,5 +1,6 @@
 required = [
   "github.com/golang/protobuf/protoc-gen-go",
+  "github.com/micro/protoc-gen-micro",
 ]
 
 [prune]
@@ -64,3 +65,4 @@ required = [
   # https://github.com/bazelbuild/rules_go/blob/109c520465fcb418f2c4be967f3744d959ad66d3/go/private/repositories.bzl#L117
   version = "0.3.0"
   name = "golang.org/x/text"
+

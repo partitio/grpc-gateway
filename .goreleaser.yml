@@ -1,6 +1,6 @@
 builds:
-  - main: ./protoc-gen-grpc-gateway/main.go
-    binary: protoc-gen-grpc-gateway
+  - main: ./protoc-gen-micro-gateway/main.go
+    binary: protoc-gen-micro-gateway
     env:
       - CGO_ENABLED=0
     goos:

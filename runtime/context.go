@@ -14,7 +14,6 @@ import (
 	"github.com/micro/go-micro/metadata"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
-	gmetadata "google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 )
 
@@ -117,24 +116,13 @@ func AnnotateContext(ctx context.Context, mux *ServeMux, req *http.Request) (con
 	return metadata.NewContext(ctx, md), nil
 }
 
-// ServerMetadata consists of gmetadata sent from gRPC server.
-type ServerMetadata struct {
-	HeaderMD  gmetadata.MD
-	TrailerMD gmetadata.MD
-}
+//// ServerMetadata consists of gmetadata sent from gRPC server.
+//type ServerMetadata struct {
+//	HeaderMD  gmetadata.MD
+//	TrailerMD gmetadata.MD
+//}
 
 type serverMetadataKey struct{}
-
-// NewServerMetadataContext creates a new context with ServerMetadata
-func NewServerMetadataContext(ctx context.Context, md ServerMetadata) context.Context {
-	return context.WithValue(ctx, serverMetadataKey{}, md)
-}
-
-// ServerMetadataFromContext returns the ServerMetadata in ctx
-func ServerMetadataFromContext(ctx context.Context) (md ServerMetadata, ok bool) {
-	md, ok = ctx.Value(serverMetadataKey{}).(ServerMetadata)
-	return
-}
 
 func timeoutDecode(s string) (time.Duration, error) {
 	size := len(s)

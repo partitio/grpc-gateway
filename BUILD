@@ -28,7 +28,7 @@ gazelle(
 package_group(
     name = "generators",
     packages = [
-        "//protoc-gen-grpc-gateway/...",
+        "//protoc-gen-micro-gateway/...",
         "//protoc-gen-swagger/...",
     ],
 )

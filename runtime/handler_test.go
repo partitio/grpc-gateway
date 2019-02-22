@@ -62,7 +62,7 @@ func TestForwardResponseStream(t *testing.T) {
 			return msg.pb, msg.err
 		}
 	}
-	ctx := runtime.NewServerMetadataContext(context.Background(), runtime.ServerMetadata{})
+	ctx := context.Background()
 	marshaler := &runtime.JSONPb{}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -105,6 +105,10 @@ func TestForwardResponseStream(t *testing.T) {
 					})
 					if err != nil {
 						t.Errorf("marshaler.Marshal() failed %v", err)
+					}
+					if len(body) < len(want) {
+						t.Errorf("ForwardResponseStream() = body: \"%s\" want: \"%s\"", body, b)
+						t.Skip()
 					}
 					errBytes := body[len(want):]
 					if string(errBytes) != string(b) {
@@ -184,7 +188,7 @@ func TestForwardResponseStreamCustomMarshaler(t *testing.T) {
 			return msg.pb, msg.err
 		}
 	}
-	ctx := runtime.NewServerMetadataContext(context.Background(), runtime.ServerMetadata{})
+	ctx := context.Background()
 	marshaler := &CustomMarshaler{&runtime.JSONPb{}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

@@ -174,7 +174,7 @@ func applyTemplate(p param, reg *descriptor.Registry) (string, error) {
 	if err := trailerTemplate.Execute(w, tp); err != nil {
 		return "", err
 	}
-	return w.String(), nil
+	return strings.Replace(w.String(), "ServiceService", "Service", -1), nil
 }
 
 var (
@@ -225,6 +225,7 @@ func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx cont
 		// grpclog.Infof("Failed to start streaming: %v", err)
 		return nil, err
 	}
+	defer stream.Close()
 	newReader, berr := utilities.IOReaderFactory(req.Body)
 	if berr != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "%v", berr)
@@ -253,8 +254,8 @@ func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx cont
 {{if .Method.GetServerStreaming}}
 	return stream, nil
 {{else}}
-	msg, err := stream.CloseAndRecv()
-	return msg, err
+	var msg *{{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
+	return msg, stream.RecvMsg(msg)
 {{end}}
 }
 `))
@@ -338,7 +339,7 @@ var (
 	if err != nil {
 		return nil, err
 	}
-	return stream, mnil
+	return stream, nil
 {{else}}
 	msg, err := client.{{.Method.GetName}}(ctx, &protoReq)
 	return msg, err

@@ -39,7 +39,7 @@ sudo make install
 Then, `go get -u` as usual the following packages:
 
 ```sh
-go get -u github.com/partitio/grpc-gateway/protoc-gen-grpc-gateway
+go get -u github.com/partitio/grpc-gateway/protoc-gen-micro-gateway
 go get -u github.com/partitio/grpc-gateway/protoc-gen-swagger
 go get -u github.com/golang/protobuf/protoc-gen-go
 ```
@@ -129,7 +129,7 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
      path/to/your_service.proto
    ```
 
-   It will generate a reverse proxy `path/to/your_service.pb.gw.go`.
+   It will generate a reverse proxy `path/to/your_service.micro.gw.go`.
 
    Note: After generating the code for each of the stubs, in order to build the code, you will want to run ```go get .``` from the directory containing the stubs.
 
@@ -191,19 +191,19 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
    ```
 
 ## Parameters and flags
-`protoc-gen-grpc-gateway` supports custom mapping from Protobuf `import` to Golang import path.
+`protoc-gen-micro-gateway` supports custom mapping from Protobuf `import` to Golang import path.
 They are compatible to [the parameters with same names in `protoc-gen-go`](https://github.com/golang/protobuf#parameters).
 
 In addition we also support the `request_context` parameter in order to use the `http.Request`'s Context (only for Go 1.7 and above).
 This parameter can be useful to pass request scoped context between the gateway and the gRPC service.
 
-`protoc-gen-grpc-gateway` also supports some more command line flags to control logging. You can give these flags together with parameters above. Run `protoc-gen-grpc-gateway --help` for more details about the flags.
+`protoc-gen-micro-gateway` also supports some more command line flags to control logging. You can give these flags together with parameters above. Run `protoc-gen-micro-gateway --help` for more details about the flags.
 
 ## More Examples
 More examples are available under `examples` directory.
 * `proto/examplepb/echo_service.proto`, `proto/examplepb/a_bit_of_everything.proto`, `proto/examplepb/unannotated_echo_service.proto`: service definition
   * `proto/examplepb/echo_service.pb.go`, `proto/examplepb/a_bit_of_everything.pb.go`, `proto/examplepb/unannotated_echo_service.pb.go`: [generated] stub of the service
-  * `proto/examplepb/echo_service.pb.gw.go`, `proto/examplepb/a_bit_of_everything.pb.gw.go`, `proto/examplepb/uannotated_echo_service.pb.gw.go`: [generated] reverse proxy for the service
+  * `proto/examplepb/echo_service.micro.gw.go`, `proto/examplepb/a_bit_of_everything.micro.gw.go`, `proto/examplepb/uannotated_echo_service.micro.gw.go`: [generated] reverse proxy for the service
   * `proto/examplepb/unannotated_echo_service.yaml`: gRPC API Configuration for ```unannotated_echo_service.proto```
 * `server/main.go`: service implementation
 * `main.go`: entrypoint of the generated reverse proxy

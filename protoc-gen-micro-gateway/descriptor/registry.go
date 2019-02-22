@@ -416,7 +416,7 @@ func (r *Registry) defaultGoPackageName(f *descriptor.FileDescriptorProto) strin
 }
 
 // packageIdentityName returns the identity of packages.
-// protoc-gen-grpc-gateway rejects CodeGenerationRequests which contains more than one packages
+// protoc-gen-micro-gateway rejects CodeGenerationRequests which contains more than one packages
 // as protoc-gen-go does.
 func (r *Registry) packageIdentityName(f *descriptor.FileDescriptorProto) string {
 	if f.Options != nil && f.Options.GoPackage != nil {
