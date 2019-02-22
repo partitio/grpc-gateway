@@ -11,15 +11,15 @@ order: 101
 
 You might want to serialize request/response messages in MessagePack instead of JSON, for example.
 
-1. Write a custom implementation of [`Marshaler`](http://godoc.org/github.com/partitio/grpc-gateway/runtime#Marshaler)
-2. Register your marshaler with [`WithMarshalerOption`](http://godoc.org/github.com/partitio/grpc-gateway/runtime#WithMarshalerOption)
+1. Write a custom implementation of [`Marshaler`](http://godoc.org/github.com/partitio/micro-gateway/runtime#Marshaler)
+2. Register your marshaler with [`WithMarshalerOption`](http://godoc.org/github.com/partitio/micro-gateway/runtime#WithMarshalerOption)
    e.g.
    ```go
    var m your.MsgPackMarshaler
    mux := runtime.NewServeMux(runtime.WithMarshalerOption("application/x-msgpack", m))
    ```
 
-You can see [the default implementation for JSON](https://github.com/partitio/grpc-gateway/blob/master/runtime/marshal_jsonpb.go) for reference.
+You can see [the default implementation for JSON](https://github.com/partitio/micro-gateway/blob/master/runtime/marshal_jsonpb.go) for reference.
 
 ### Using camelCase for JSON
 
@@ -29,10 +29,10 @@ The protocol buffer compiler generates camelCase JSON tags that can be used with
    ```
 
 ## Mapping from HTTP request headers to gRPC client metadata
-You might not like [the default mapping rule](http://godoc.org/github.com/partitio/grpc-gateway/runtime#DefaultHeaderMatcher) and might want to pass through all the HTTP headers, for example.
+You might not like [the default mapping rule](http://godoc.org/github.com/partitio/micro-gateway/runtime#DefaultHeaderMatcher) and might want to pass through all the HTTP headers, for example.
 
-1. Write a [`HeaderMatcherFunc`](http://godoc.org/github.com/partitio/grpc-gateway/runtime#HeaderMatcherFunc).
-2. Register the function with [`WithIncomingHeaderMatcher`](http://godoc.org/github.com/partitio/grpc-gateway/runtime#WithIncomingHeaderMatcher)
+1. Write a [`HeaderMatcherFunc`](http://godoc.org/github.com/partitio/micro-gateway/runtime#HeaderMatcherFunc).
+2. Register the function with [`WithIncomingHeaderMatcher`](http://godoc.org/github.com/partitio/micro-gateway/runtime#WithIncomingHeaderMatcher)
 
    e.g.
    ```go
@@ -45,7 +45,7 @@ You might not like [the default mapping rule](http://godoc.org/github.com/partit
    ```
 
 ## Mapping from gRPC server metadata to HTTP response headers
-ditto. Use [`WithOutgoingHeaderMatcher`](http://godoc.org/github.com/partitio/grpc-gateway/runtime#WithOutgoingHeaderMatcher)
+ditto. Use [`WithOutgoingHeaderMatcher`](http://godoc.org/github.com/partitio/micro-gateway/runtime#WithOutgoingHeaderMatcher)
 
 ## Mutate response messages or set response headers
 You might want to return a subset of response fields as HTTP response headers; 
@@ -60,7 +60,7 @@ Or you might want to mutate the response messages to be returned.
    	return nil
    }
    ```
-2. Register the filter with [`WithForwardResponseOption`](http://godoc.org/github.com/partitio/grpc-gateway/runtime#WithForwardResponseOption)
+2. Register the filter with [`WithForwardResponseOption`](http://godoc.org/github.com/partitio/micro-gateway/runtime#WithForwardResponseOption)
    
    e.g.
    ```go
@@ -78,7 +78,7 @@ import (
    "github.com/opentracing/opentracing-go/ext"
 )
 
-var grpcGatewayTag = opentracing.Tag{Key: string(ext.Component), Value: "grpc-gateway"}
+var grpcGatewayTag = opentracing.Tag{Key: string(ext.Component), Value: "micro-gateway"}
 
 func tracingWrapper(h http.Handler) http.Handler {
   return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -106,12 +106,12 @@ if err := http.ListenAndServe(":8080", tracingWrapper(mux)); err != nil {
 ```
 
 ## Error handler
-http://mycodesmells.com/post/grpc-gateway-error-handler
+http://mycodesmells.com/post/micro-gateway-error-handler
 
 ## Replace a response forwarder per method
 You might want to keep the behavior of the current marshaler but change only a message forwarding of a certain API method.
 
-1. write a custom forwarder which is compatible to [`ForwardResponseMessage`](http://godoc.org/github.com/partitio/grpc-gateway/runtime#ForwardResponseMessage) or [`ForwardResponseStream`](http://godoc.org/github.com/partitio/grpc-gateway/runtime#ForwardResponseStream).
+1. write a custom forwarder which is compatible to [`ForwardResponseMessage`](http://godoc.org/github.com/partitio/micro-gateway/runtime#ForwardResponseMessage) or [`ForwardResponseStream`](http://godoc.org/github.com/partitio/micro-gateway/runtime#ForwardResponseStream).
 2. replace the default forwarder of the method with your one.
 
    e.g. add `forwarder_overwrite.go` into the go package of the generated code,
@@ -121,7 +121,7 @@ You might want to keep the behavior of the current marshaler but change only a m
    import (
    	"net/http"
 
-   	"github.com/partitio/grpc-gateway/runtime"
+   	"github.com/partitio/micro-gateway/runtime"
    	"github.com/golang/protobuf/proto"
    	"golang.org/x/net/context"
    )

@@ -8,7 +8,7 @@ import fmt "fmt"
 import math "math"
 import _ "google.golang.org/genproto/googleapis/api/annotations"
 import google_protobuf2 "github.com/golang/protobuf/ptypes/empty"
-import grpc_gateway_examples_sub "github.com/partitio/grpc-gateway/examples/proto/sub"
+import grpc_gateway_examples_sub "github.com/partitio/micro-gateway/examples/proto/sub"
 
 import (
 	context "context"

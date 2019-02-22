@@ -6,7 +6,7 @@ import (
 
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 	gogen "github.com/golang/protobuf/protoc-gen-go/generator"
-	"github.com/partitio/grpc-gateway/protoc-gen-micro-gateway/httprule"
+	"github.com/partitio/micro-gateway/protoc-gen-micro-gateway/httprule"
 )
 
 // IsWellKnownType returns true if the provided fully qualified type name is considered 'well-known'.
@@ -21,7 +21,7 @@ type GoPackage struct {
 	Path string
 	// Name is the package name of the package
 	Name string
-	// Alias is an alias of the package unique within the current invokation of grpc-gateway generator.
+	// Alias is an alias of the package unique within the current invokation of micro-gateway generator.
 	Alias string
 }
 

@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/golang/protobuf/proto"
-	"github.com/partitio/grpc-gateway/utilities"
+	"github.com/partitio/micro-gateway/utilities"
 	"google.golang.org/grpc/grpclog"
 )
 

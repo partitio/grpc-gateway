@@ -13,7 +13,7 @@ go_library(
         "examplepb_response_body_req.go",
         "response_body_service_api.go",
     ],
-    importpath = "github.com/partitio/grpc-gateway/examples/clients/responsebody",
+    importpath = "github.com/partitio/micro-gateway/examples/clients/responsebody",
     visibility = ["//visibility:public"],
     deps = ["@com_github_go_resty_resty//:go_default_library"],
 )

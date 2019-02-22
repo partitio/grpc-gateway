@@ -7,7 +7,7 @@ import proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"
 import empty "github.com/golang/protobuf/ptypes/empty"
-import sub "github.com/partitio/grpc-gateway/examples/proto/sub"
+import sub "github.com/partitio/micro-gateway/examples/proto/sub"
 import _ "google.golang.org/genproto/googleapis/api/annotations"
 
 import (

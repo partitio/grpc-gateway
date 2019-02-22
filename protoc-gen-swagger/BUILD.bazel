@@ -5,7 +5,7 @@ package(default_visibility = ["//visibility:private"])
 go_library(
     name = "go_default_library",
     srcs = ["main.go"],
-    importpath = "github.com/partitio/grpc-gateway/protoc-gen-swagger",
+    importpath = "github.com/partitio/micro-gateway/protoc-gen-swagger",
     deps = [
         "//codegenerator:go_default_library",
         "//protoc-gen-micro-gateway/descriptor:go_default_library",

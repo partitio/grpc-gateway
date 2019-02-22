@@ -1,6 +1,6 @@
 # Browser example
 
-This directory contains an example use of grpc-gateway with web browsers.
+This directory contains an example use of micro-gateway with web browsers.
 The following commands automatically runs integration tests with phantomjs.
 
 ```shell-session

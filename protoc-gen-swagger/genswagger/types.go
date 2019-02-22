@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 
-	"github.com/partitio/grpc-gateway/protoc-gen-micro-gateway/descriptor"
+	"github.com/partitio/micro-gateway/protoc-gen-micro-gateway/descriptor"
 )
 
 type param struct {

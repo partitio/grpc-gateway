@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/golang/protobuf/jsonpb"
-	"github.com/partitio/grpc-gateway/runtime"
+	"github.com/partitio/micro-gateway/runtime"
 	spb "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/grpc/codes"
 )

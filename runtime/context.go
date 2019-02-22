@@ -27,7 +27,7 @@ const MetadataHeaderPrefix = "Grpc-Metadata-"
 const MetadataPrefix = ""
 
 // MetadataTrailerPrefix is prepended to gRPC gmetadata as it is converted to
-// HTTP headers in a response handled by grpc-gateway
+// HTTP headers in a response handled by micro-gateway
 const MetadataTrailerPrefix = "Grpc-Trailer-"
 
 const metadataGrpcTimeout = "Grpc-Timeout"

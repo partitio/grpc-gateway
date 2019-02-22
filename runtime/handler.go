@@ -9,7 +9,7 @@ import (
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes/any"
 	"github.com/micro/go-micro/metadata"
-	"github.com/partitio/grpc-gateway/runtime/internal"
+	"github.com/partitio/micro-gateway/runtime/internal"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/grpc/status"

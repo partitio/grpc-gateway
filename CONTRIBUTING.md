@@ -1,10 +1,10 @@
 # How to contribute
 
-Thank you for your contribution to grpc-gateway.
+Thank you for your contribution to micro-gateway.
 Here's the recommended process of contribution.
 
-1. `go get github.com/partitio/grpc-gateway/protoc-gen-micro-gateway`
-2. `cd $GOPATH/src/github.com/partitio/grpc-gateway`
+1. `go get github.com/partitio/micro-gateway/protoc-gen-micro-gateway`
+2. `cd $GOPATH/src/github.com/partitio/micro-gateway`
 3. hack, hack, hack...
 4. Make sure that your change follows best practices in Go
    * [Effective Go](https://golang.org/doc/effective_go.html)
@@ -24,11 +24,11 @@ All submissions, including submissions by project members, require review.
 Great, it should be as simple as thus (run from the root of the directory):
 
 ```bash
-docker run -v $(pwd):/go/src/github.com/partitio/grpc-gateway --rm jfbrandhorst/grpc-gateway-build-env \
-    /bin/bash -c 'cd /go/src/github.com/partitio/grpc-gateway && \
+docker run -v $(pwd):/go/src/github.com/partitio/micro-gateway --rm jfbrandhorst/micro-gateway-build-env \
+    /bin/bash -c 'cd /go/src/github.com/partitio/micro-gateway && \
         make realclean && \
         make examples SWAGGER_CODEGEN="${SWAGGER_CODEGEN}"'
-docker run -itv $(pwd):/grpc-gateway -w /grpc-gateway --entrypoint /bin/bash --rm \
+docker run -itv $(pwd):/micro-gateway -w /micro-gateway --entrypoint /bin/bash --rm \
     l.gcr.io/google/bazel -c 'bazel run :gazelle_fix; bazel run :buildifier'
 ```
 

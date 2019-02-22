@@ -9,7 +9,7 @@ go_library(
         "generator.go",
         "template.go",
     ],
-    importpath = "github.com/partitio/grpc-gateway/protoc-gen-micro-gateway/gengateway",
+    importpath = "github.com/partitio/micro-gateway/protoc-gen-micro-gateway/gengateway",
     deps = [
         "//protoc-gen-micro-gateway/descriptor:go_default_library",
         "//protoc-gen-micro-gateway/generator:go_default_library",

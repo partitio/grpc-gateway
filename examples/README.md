@@ -8,7 +8,7 @@ $ dep init
 Follow the guides from this [README.md](./browser/README.md) to run the server and gateway.
 ```bash
 # Make sure you are in the correct directory: 
-# $GOPATH/src/github.com/partitio/grpc-gateway/examples
+# $GOPATH/src/github.com/partitio/micro-gateway/examples
 $ cd examples/browser
 $ pwd
 

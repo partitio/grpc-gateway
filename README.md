@@ -1,8 +1,8 @@
-# grpc-gateway
+# micro-gateway
 
-[![CircleCI](https://circleci.com/gh/partitio/grpc-gateway.svg?style=svg)](https://circleci.com/gh/partitio/grpc-gateway)
+[![CircleCI](https://circleci.com/gh/partitio/micro-gateway.svg?style=svg)](https://circleci.com/gh/partitio/micro-gateway)
 
-grpc-gateway is a plugin of [protoc](http://github.com/google/protobuf).
+micro-gateway is a plugin of [protoc](http://github.com/google/protobuf).
 It reads [gRPC](http://github.com/grpc/grpc-common) service definition,
 and generates a reverse-proxy server which translates a RESTful JSON API into gRPC.
 This server is generated according to the
@@ -13,7 +13,7 @@ It helps you to provide your APIs in both gRPC and RESTful style at the same tim
 
 ![architecture introduction diagram](https://docs.google.com/drawings/d/12hp4CPqrNPFhattL_cIoJptFvlAqm5wLQ0ggqI5mkCg/pub?w=749&amp;h=370)
 
-## Check out our [documentation](https://grpc-ecosystem.github.io/grpc-gateway/)!
+## Check out our [documentation](https://grpc-ecosystem.github.io/micro-gateway/)!
 
 ## Background
 gRPC is great -- it generates API clients and server stubs in many programming languages, it is fast, easy-to-use, bandwidth-efficient and its design is combat-proven by Google.
@@ -39,8 +39,8 @@ sudo make install
 Then, `go get -u` as usual the following packages:
 
 ```sh
-go get -u github.com/partitio/grpc-gateway/protoc-gen-micro-gateway
-go get -u github.com/partitio/grpc-gateway/protoc-gen-swagger
+go get -u github.com/partitio/micro-gateway/protoc-gen-micro-gateway
+go get -u github.com/partitio/micro-gateway/protoc-gen-swagger
 go get -u github.com/golang/protobuf/protoc-gen-go
 ```
 
@@ -85,14 +85,14 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
     }
    ```
 
-   If you do not want to modify the proto file for use with grpc-gateway you can alternatively use an external [gRPC Service Configuration](https://cloud.google.com/endpoints/docs/grpc/grpc-service-config) file. [Check our documentation](https://grpc-ecosystem.github.io/grpc-gateway/docs/grpcapiconfiguration.html) for more information.
+   If you do not want to modify the proto file for use with micro-gateway you can alternatively use an external [gRPC Service Configuration](https://cloud.google.com/endpoints/docs/grpc/grpc-service-config) file. [Check our documentation](https://grpc-ecosystem.github.io/micro-gateway/docs/grpcapiconfiguration.html) for more information.
 
 3. Generate gRPC stub
 
    ```sh
    protoc -I/usr/local/include -I. \
      -I$GOPATH/src \
-     -I$GOPATH/src/github.com/partitio/grpc-gateway/third_party/googleapis \
+     -I$GOPATH/src/github.com/partitio/micro-gateway/third_party/googleapis \
      --go_out=plugins=grpc:. \
      path/to/your_service.proto
    ```
@@ -105,13 +105,13 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
      ```sh
      protoc -I/usr/local/include -I. \
        -I$GOPATH/src \
-       -I$GOPATH/src/github.com/partitio/grpc-gateway/third_party/googleapis \
+       -I$GOPATH/src/github.com/partitio/micro-gateway/third_party/googleapis \
        --ruby_out=. \
        path/to/your/service_proto
 
      protoc -I/usr/local/include -I. \
        -I$GOPATH/src \
-       -I$GOPATH/src/github.com/partitio/grpc-gateway/third_party/googleapis \
+       -I$GOPATH/src/github.com/partitio/micro-gateway/third_party/googleapis \
        --plugin=protoc-gen-grpc=grpc_ruby_plugin \
        --grpc-ruby_out=. \
        path/to/your/service.proto
@@ -124,7 +124,7 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
    ```sh
    protoc -I/usr/local/include -I. \
      -I$GOPATH/src \
-     -I$GOPATH/src/github.com/partitio/grpc-gateway/third_party/googleapis \
+     -I$GOPATH/src/github.com/partitio/micro-gateway/third_party/googleapis \
      --micro-gateway_out=logtostderr=true:. \
      path/to/your_service.proto
    ```
@@ -145,7 +145,7 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
 
      "github.com/golang/glog"
      "golang.org/x/net/context"
-     "github.com/partitio/grpc-gateway/runtime"
+     "github.com/partitio/micro-gateway/runtime"
      "google.golang.org/grpc"
 
      gw "path/to/your_service_package"
@@ -185,7 +185,7 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
    ```sh
    protoc -I/usr/local/include -I. \
      -I$GOPATH/src \
-     -I$GOPATH/src/github.com/partitio/grpc-gateway/third_party/googleapis \
+     -I$GOPATH/src/github.com/partitio/micro-gateway/third_party/googleapis \
      --swagger_out=logtostderr=true:. \
      path/to/your_service.proto
    ```
@@ -208,7 +208,7 @@ More examples are available under `examples` directory.
 * `server/main.go`: service implementation
 * `main.go`: entrypoint of the generated reverse proxy
 
-To use the same port for custom HTTP handlers (e.g. serving `swagger.json`), gRPC-gateway, and a gRPC server, see [this code example by CoreOS](https://github.com/philips/grpc-gateway-example/blob/master/cmd/serve.go) (and its accompanying [blog post](https://coreos.com/blog/gRPC-protobufs-swagger.html))
+To use the same port for custom HTTP handlers (e.g. serving `swagger.json`), micro-gateway, and a gRPC server, see [this code example by CoreOS](https://github.com/philips/micro-gateway-example/blob/master/cmd/serve.go) (and its accompanying [blog post](https://coreos.com/blog/gRPC-protobufs-swagger.html))
 
 ## Features
 ### Supported
@@ -237,7 +237,7 @@ But patch is welcome.
 
 # Mapping gRPC to HTTP
 
-* [How gRPC error codes map to HTTP status codes in the response](https://github.com/partitio/grpc-gateway/blob/master/runtime/errors.go#L15)
+* [How gRPC error codes map to HTTP status codes in the response](https://github.com/partitio/micro-gateway/blob/master/runtime/errors.go#L15)
 * HTTP request source IP is added as `X-Forwarded-For` gRPC request header
 * HTTP request host is added as `X-Forwarded-Host` gRPC request header
 * HTTP `Authorization` header is added as `authorization` gRPC request header
@@ -247,8 +247,8 @@ But patch is welcome.
 
 
 # Contribution
-See [CONTRIBUTING.md](http://github.com/partitio/grpc-gateway/blob/master/CONTRIBUTING.md).
+See [CONTRIBUTING.md](http://github.com/partitio/micro-gateway/blob/master/CONTRIBUTING.md).
 
 # License
-grpc-gateway is licensed under the BSD 3-Clause License.
-See [LICENSE.txt](https://github.com/partitio/grpc-gateway/blob/master/LICENSE.txt) for more details.
+micro-gateway is licensed under the BSD 3-Clause License.
+See [LICENSE.txt](https://github.com/partitio/micro-gateway/blob/master/LICENSE.txt) for more details.

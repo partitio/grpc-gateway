@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/partitio/grpc-gateway/runtime"
+	"github.com/partitio/micro-gateway/runtime"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

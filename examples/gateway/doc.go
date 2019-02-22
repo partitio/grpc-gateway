@@ -1,2 +1,2 @@
-// Package gateway is an example of grpc-gateway server
+// Package gateway is an example of micro-gateway server
 package gateway

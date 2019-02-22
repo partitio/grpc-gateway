@@ -1,22 +1,22 @@
-# The gRPC-Gateway project is maintained by volunteers in their spare time. Please follow these troubleshooting steps before submitting an issue.
+# The micro-gateway project is maintained by volunteers in their spare time. Please follow these troubleshooting steps before submitting an issue.
 
-- [ ] Check if your issue has already been reported (https://github.com/partitio/grpc-gateway/issues).
+- [ ] Check if your issue has already been reported (https://github.com/partitio/micro-gateway/issues).
 - [ ] Update your protoc to the [latest version](https://github.com/google/protobuf/releases).
-- [ ] Update your copy of the `grpc-gateway` library to the latest version from github:
+- [ ] Update your copy of the `micro-gateway` library to the latest version from github:
   ```sh
-  go get -u github.com/partitio/grpc-gateway
+  go get -u github.com/partitio/micro-gateway
   ```
 - [ ] Delete the `protoc-gen-micro-gateway` and `protoc-gen-swagger` binary from your `PATH`,
   and reinstall the latest versions:
   ```sh
-  go get -u github.com/partitio/grpc-gateway/protoc-gen-micro-gateway
-  go get -u github.com/partitio/grpc-gateway/protoc-gen-swagger
+  go get -u github.com/partitio/micro-gateway/protoc-gen-micro-gateway
+  go get -u github.com/partitio/micro-gateway/protoc-gen-swagger
   ```
   
 ## I still have a problem!
  
 Please consider reaching out for help on a chat forum, such as
-[Gophers Slack](https://invite.slack.golangbridge.org/) (channel #grpc-gateway).
+[Gophers Slack](https://invite.slack.golangbridge.org/) (channel #micro-gateway).
 It's much easier to help with common debugging steps in a chat, and some of
 the maintainers are reading the channel regularly. If you
 submit an issue which is clearly an environment setup problem, or it's obvious

@@ -55,7 +55,7 @@ type Registry struct {
 
 	// useJSONNamesForFields if true json tag name is used for generating fields in swagger definitions,
 	// otherwise the original proto name is used. It's helpful for synchronizing the swagger definition
-	// with grpc-gateway response, if it uses json tags for marshaling.
+	// with micro-gateway response, if it uses json tags for marshaling.
 	useJSONNamesForFields bool
 }
 

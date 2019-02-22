@@ -16,7 +16,7 @@ import (
 // A HandlerFunc handles a specific pair of path pattern and HTTP method.
 type HandlerFunc func(w http.ResponseWriter, r *http.Request, pathParams map[string]string)
 
-// ServeMux is a request multiplexer for grpc-gateway.
+// ServeMux is a request multiplexer for micro-gateway.
 // It matches http requests to patterns and invokes the corresponding handler.
 type ServeMux struct {
 	// handlers maps HTTP method to a list of handlers.

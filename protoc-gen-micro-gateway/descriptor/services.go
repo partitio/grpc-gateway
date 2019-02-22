@@ -7,7 +7,7 @@ import (
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
 	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
-	"github.com/partitio/grpc-gateway/protoc-gen-micro-gateway/httprule"
+	"github.com/partitio/micro-gateway/protoc-gen-micro-gateway/httprule"
 	options "google.golang.org/genproto/googleapis/api/annotations"
 )
 
@@ -20,7 +20,7 @@ func (r *Registry) loadServices(file *File) error {
 	for _, sd := range file.GetService() {
 		glog.V(2).Infof("Registering %s", sd.GetName())
 		svc := &Service{
-			File: file,
+			File:                   file,
 			ServiceDescriptorProto: sd,
 		}
 		for _, md := range sd.GetMethod() {

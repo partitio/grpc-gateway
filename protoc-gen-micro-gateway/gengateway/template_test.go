@@ -6,8 +6,8 @@ import (
 
 	"github.com/golang/protobuf/proto"
 	protodescriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
-	"github.com/partitio/grpc-gateway/protoc-gen-micro-gateway/descriptor"
-	"github.com/partitio/grpc-gateway/protoc-gen-micro-gateway/httprule"
+	"github.com/partitio/micro-gateway/protoc-gen-micro-gateway/descriptor"
+	"github.com/partitio/micro-gateway/protoc-gen-micro-gateway/httprule"
 )
 
 func crossLinkFixture(f *descriptor.File) *descriptor.File {

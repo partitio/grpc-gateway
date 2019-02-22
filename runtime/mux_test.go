@@ -7,8 +7,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/partitio/grpc-gateway/runtime"
-	"github.com/partitio/grpc-gateway/utilities"
+	"github.com/partitio/micro-gateway/runtime"
+	"github.com/partitio/micro-gateway/utilities"
 )
 
 func TestMuxServeHTTP(t *testing.T) {

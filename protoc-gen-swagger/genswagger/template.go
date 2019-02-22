@@ -11,8 +11,8 @@ import (
 
 	"github.com/golang/protobuf/proto"
 	pbdescriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
-	"github.com/partitio/grpc-gateway/protoc-gen-micro-gateway/descriptor"
-	swagger_options "github.com/partitio/grpc-gateway/protoc-gen-swagger/options"
+	"github.com/partitio/micro-gateway/protoc-gen-micro-gateway/descriptor"
+	swagger_options "github.com/partitio/micro-gateway/protoc-gen-swagger/options"
 )
 
 var wktSchemas = map[string]schemaCore{
@@ -511,7 +511,7 @@ func resolveFullyQualifiedNameToSwaggerNames(messages []string) map[string]strin
 	return uniqueNames
 }
 
-// Swagger expects paths of the form /path/{string_value} but grpc-gateway paths are expected to be of the form /path/{string_value=strprefix/*}. This should reformat it correctly.
+// Swagger expects paths of the form /path/{string_value} but micro-gateway paths are expected to be of the form /path/{string_value=strprefix/*}. This should reformat it correctly.
 func templateToSwaggerPath(path string) string {
 	// It seems like the right thing to do here is to just use
 	// strings.Split(path, "/") but that breaks badly when you hit a url like
@@ -644,7 +644,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 						Description: desc,
 						In:          "path",
 						Required:    true,
-						// Parameters in gRPC-Gateway can only be strings?
+						// Parameters in micro-gateway can only be strings?
 						Type:             paramType,
 						Format:           paramFormat,
 						Enum:             enumNames,

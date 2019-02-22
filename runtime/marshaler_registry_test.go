@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/partitio/grpc-gateway/runtime"
+	"github.com/partitio/micro-gateway/runtime"
 )
 
 func TestMarshalerForRequest(t *testing.T) {

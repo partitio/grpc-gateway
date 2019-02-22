@@ -5,7 +5,7 @@ import (
 	"net"
 
 	"github.com/golang/glog"
-	examples "github.com/partitio/grpc-gateway/examples/proto/examplepb"
+	examples "github.com/partitio/micro-gateway/examples/proto/examplepb"
 	"google.golang.org/grpc"
 )
 

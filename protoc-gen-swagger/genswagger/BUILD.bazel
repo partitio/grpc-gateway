@@ -10,7 +10,7 @@ go_library(
         "template.go",
         "types.go",
     ],
-    importpath = "github.com/partitio/grpc-gateway/protoc-gen-swagger/genswagger",
+    importpath = "github.com/partitio/micro-gateway/protoc-gen-swagger/genswagger",
     deps = [
         "//protoc-gen-micro-gateway/descriptor:go_default_library",
         "//protoc-gen-micro-gateway/generator:go_default_library",

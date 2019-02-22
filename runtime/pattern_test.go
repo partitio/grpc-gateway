@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/partitio/grpc-gateway/utilities"
+	"github.com/partitio/micro-gateway/utilities"
 )
 
 const (

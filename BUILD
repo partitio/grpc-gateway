@@ -16,13 +16,13 @@ buildifier(
 gazelle(
     name = "gazelle_diff",
     mode = "diff",
-    prefix = "github.com/partitio/grpc-gateway",
+    prefix = "github.com/partitio/micro-gateway",
 )
 
 gazelle(
     name = "gazelle_fix",
     mode = "fix",
-    prefix = "github.com/partitio/grpc-gateway",
+    prefix = "github.com/partitio/micro-gateway",
 )
 
 package_group(

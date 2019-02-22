@@ -17,9 +17,9 @@ import (
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
-	"github.com/partitio/grpc-gateway/codegenerator"
-	"github.com/partitio/grpc-gateway/protoc-gen-micro-gateway/descriptor"
-	"github.com/partitio/grpc-gateway/protoc-gen-micro-gateway/gengateway"
+	"github.com/partitio/micro-gateway/codegenerator"
+	"github.com/partitio/micro-gateway/protoc-gen-micro-gateway/descriptor"
+	"github.com/partitio/micro-gateway/protoc-gen-micro-gateway/gengateway"
 )
 
 var (

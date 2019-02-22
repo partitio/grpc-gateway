@@ -4,7 +4,7 @@ _output/
 # Bazel.
 bazel-bin
 bazel-genfiles
-bazel-grpc-gateway
+bazel-micro-gateway
 bazel-out
 bazel-testlogs
 

@@ -4,7 +4,7 @@ import (
 	"context"
 	"io"
 
-	examples "github.com/partitio/grpc-gateway/examples/proto/examplepb"
+	examples "github.com/partitio/micro-gateway/examples/proto/examplepb"
 )
 
 type flowCombinationServer struct{}

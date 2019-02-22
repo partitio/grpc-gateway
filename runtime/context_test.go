@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"github.com/micro/go-micro/metadata"
-	"github.com/partitio/grpc-gateway/runtime"
+	"github.com/partitio/micro-gateway/runtime"
 	"net/http"
 	"reflect"
 	"testing"

@@ -33,22 +33,22 @@ From an elevated cmd.exe prompt set the GOPATH variable in windows and add the `
 
 Then `go get -u -v` the following packages:
 
-    go get -u -v github.com/partitio/grpc-gateway/protoc-gen-micro-gateway
-    go get -u -v github.com/partitio/grpc-gateway/protoc-gen-swagger
+    go get -u -v github.com/partitio/micro-gateway/protoc-gen-micro-gateway
+    go get -u -v github.com/partitio/micro-gateway/protoc-gen-swagger
     go get -u -v github.com/golang/protobuf/protoc-gen-go
 
 This will probably fail with similar output.
 
-    github.com/partitio/grpc-gateway (download)
-    # cd .; git clone https://github.com/partitio/grpc-gateway C:\path\to\your\cygwin\home\user\go\src\github.com\grpc-ecosystem\grpc-gateway
-    Cloning into 'C:\path\to\your\cygwin\home\user\go\src\github.com\grpc-ecosystem\grpc-gateway'...
-    fatal: Invalid path '/home/user/go/C:\path\to\your\cygwin\home\user\go\src\github.com\grpc-ecosystem\grpc-gateway': No such file or directory
-    package github.com/partitio/grpc-gateway/protoc-gen-micro-gateway: exit status 128
+    github.com/partitio/micro-gateway (download)
+    # cd .; git clone https://github.com/partitio/micro-gateway C:\path\to\your\cygwin\home\user\go\src\github.com\grpc-ecosystem\micro-gateway
+    Cloning into 'C:\path\to\your\cygwin\home\user\go\src\github.com\grpc-ecosystem\micro-gateway'...
+    fatal: Invalid path '/home/user/go/C:\path\to\your\cygwin\home\user\go\src\github.com\grpc-ecosystem\micro-gateway': No such file or directory
+    package github.com/partitio/micro-gateway/protoc-gen-micro-gateway: exit status 128
 
 To fix this you need to run the `go get -u -v` commands and look for all lines starting with `# cd .; `.
 Copy and paste these lines into your shell and change the clone destination directories.
 
-    git clone https://github.com/partitio/grpc-gateway $(cygpath -u $GOPATH)/src/github.com/partitio/grpc-gateway
+    git clone https://github.com/partitio/micro-gateway $(cygpath -u $GOPATH)/src/github.com/partitio/micro-gateway
     git clone https://github.com/golang/glog $(cygpath -u $GOPATH)/src/github.com/golang/glog
     git clone https://github.com/golang/protobuf $(cygpath -u $GOPATH)/src/github.com/golang/protobuf
     git clone https://github.com/google/go-genproto $(cygpath -u $GOPATH)/src/google.golang.org/genproto
@@ -56,13 +56,13 @@ Copy and paste these lines into your shell and change the clone destination dire
 Once the clone operations are finished the `go get -u -v` commands shouldn't give you an error anymore.
 
 ## Usage
-Follow the [instuctions](https://github.com/partitio/grpc-gateway#usage) in the [README](https://github.com/partitio/grpc-gateway).
+Follow the [instuctions](https://github.com/partitio/micro-gateway#usage) in the [README](https://github.com/partitio/micro-gateway).
 
 Adjust steps 3, 5 and 7 like this. protoc expects native windows paths.
 
-    protoc -I. -I$(cygpath -w /usr/local/include) -I${GOPATH}/src -I${GOPATH}/src/github.com/partitio/grpc-gateway/third_party/googleapis --go_out=plugins=grpc:. ./path/to/your_service.proto
-    protoc -I. -I$(cygpath -w /usr/local/include) -I${GOPATH}/src -I${GOPATH}/src/github.com/partitio/grpc-gateway/third_party/googleapis --micro-gateway_out=logtostderr=true:. ./path/to/your_service.proto
-    protoc -I. -I$(cygpath -w /usr/local/include) -I${GOPATH}/src -I${GOPATH}/src/github.com/partitio/grpc-gateway/third_party/googleapis --swagger_out=logtostderr=true:. ./path/to/your_service.proto
+    protoc -I. -I$(cygpath -w /usr/local/include) -I${GOPATH}/src -I${GOPATH}/src/github.com/partitio/micro-gateway/third_party/googleapis --go_out=plugins=grpc:. ./path/to/your_service.proto
+    protoc -I. -I$(cygpath -w /usr/local/include) -I${GOPATH}/src -I${GOPATH}/src/github.com/partitio/micro-gateway/third_party/googleapis --micro-gateway_out=logtostderr=true:. ./path/to/your_service.proto
+    protoc -I. -I$(cygpath -w /usr/local/include) -I${GOPATH}/src -I${GOPATH}/src/github.com/partitio/micro-gateway/third_party/googleapis --swagger_out=logtostderr=true:. ./path/to/your_service.proto
 
 Then `cd` into the directory where your entry-point `main.go` file is located and run
 
@@ -80,4 +80,4 @@ Then run
 
     go install
  
-to compile and install your grpc-gateway service into `$GOPATH/bin`.
+to compile and install your micro-gateway service into `$GOPATH/bin`.

@@ -1,9 +1,9 @@
 # This is a Makefile which maintains files automatically generated but to be
 # shipped together with other files.
 # You don't have to rebuild these targets by yourself unless you develop
-# grpc-gateway itself.
+# micro-gateway itself.
 
-PKG=github.com/partitio/grpc-gateway
+PKG=github.com/partitio/micro-gateway
 GO_PLUGIN=bin/protoc-gen-go
 MICRO_PLUGIN=bin/protoc-gen-micro
 GO_PROTOBUF_REPO=github.com/golang/protobuf
@@ -199,10 +199,10 @@ test: examples
 #		-v "$(PWD):/usr/local/src/your-app" \
 #		ferrarimarco/github-changelog-generator:1.14.3 \
 #				-u grpc-ecosystem \
-#				-p grpc-gateway \
+#				-p micro-gateway \
 #				--author \
 #				--compare-link \
-#				--github-site=https://grpc-ecosystem.github.io/grpc-gateway \
+#				--github-site=https://grpc-ecosystem.github.io/micro-gateway \
 #				--unreleased-label "**Next release**" \
 #				--future-release=v1.6.3
 lint:

@@ -5,7 +5,7 @@ package(default_visibility = ["//:generators"])
 go_library(
     name = "go_default_library",
     srcs = ["generator.go"],
-    importpath = "github.com/partitio/grpc-gateway/protoc-gen-micro-gateway/generator",
+    importpath = "github.com/partitio/micro-gateway/protoc-gen-micro-gateway/generator",
     deps = [
         "//protoc-gen-micro-gateway/descriptor:go_default_library",
         "@io_bazel_rules_go//proto/wkt:compiler_plugin_go_proto",

@@ -3,7 +3,7 @@ package server
 import (
 	"context"
 
-	examples "github.com/partitio/grpc-gateway/examples/proto/examplepb"
+	examples "github.com/partitio/micro-gateway/examples/proto/examplepb"
 )
 
 // Implements of ResponseBodyServiceServer

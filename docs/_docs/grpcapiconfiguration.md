@@ -9,10 +9,10 @@ In some sitations annotating the .proto file of a service is not an option. For 
 
 Google Cloud Platform offers a way to do this for services hosted with them called ["gRPC API Configuration"](https://cloud.google.com/endpoints/docs/grpc/grpc-service-config). It can be used to define the behavior of a gRPC API service without modifications to the service itself in the form of [YAML](https://en.wikipedia.org/wiki/YAML) configuration files.
 
-grpc-gateway generators implement the [HTTP rules part](https://cloud.google.com/endpoints/docs/grpc-service-config/reference/rpc/google.api#httprule) of this specification. This allows you to take a completely unannotated service proto file, add a YAML file describing its HTTP endpoints and use them together like a annotated proto file with the grpc-gateway generators.
+micro-gateway generators implement the [HTTP rules part](https://cloud.google.com/endpoints/docs/grpc-service-config/reference/rpc/google.api#httprule) of this specification. This allows you to take a completely unannotated service proto file, add a YAML file describing its HTTP endpoints and use them together like a annotated proto file with the micro-gateway generators.
 
 ## Usage of gRPC API Configuration YAML files
-The following is equivalent to the basic [usage example](usage.html) but without direct annotation for grpc-gateway in the .proto file. Only some steps require minor changes to use a gRPC API Configuration YAML file instead:
+The following is equivalent to the basic [usage example](usage.html) but without direct annotation for micro-gateway in the .proto file. Only some steps require minor changes to use a gRPC API Configuration YAML file instead:
 
 1. Define your service in gRPC as usual
    
@@ -47,7 +47,7 @@ The following is equivalent to the basic [usage example](usage.html) but without
    ```sh
    protoc -I/usr/local/include -I. \
      -I$GOPATH/src \
-     -I$GOPATH/src/github.com/partitio/grpc-gateway/third_party/googleapis \
+     -I$GOPATH/src/github.com/partitio/micro-gateway/third_party/googleapis \
      --go_out=plugins=grpc:. \
      path/to/your_service.proto
    ```
@@ -60,13 +60,13 @@ The following is equivalent to the basic [usage example](usage.html) but without
      ```sh
      protoc -I/usr/local/include -I. \
        -I$GOPATH/src \
-       -I$GOPATH/src/github.com/partitio/grpc-gateway/third_party/googleapis \
+       -I$GOPATH/src/github.com/partitio/micro-gateway/third_party/googleapis \
        --ruby_out=. \
        path/to/your/service_proto
      
      protoc -I/usr/local/include -I. \
        -I$GOPATH/src \
-       -I$GOPATH/src/github.com/partitio/grpc-gateway/third_party/googleapis \
+       -I$GOPATH/src/github.com/partitio/micro-gateway/third_party/googleapis \
        --plugin=protoc-gen-grpc=grpc_ruby_plugin \
        --grpc-ruby_out=. \
        path/to/your/service.proto
@@ -78,7 +78,7 @@ The following is equivalent to the basic [usage example](usage.html) but without
    ```sh
    protoc -I/usr/local/include -I. \
      -I$GOPATH/src \
-     -I$GOPATH/src/github.com/partitio/grpc-gateway/third_party/googleapis \
+     -I$GOPATH/src/github.com/partitio/micro-gateway/third_party/googleapis \
      --micro-gateway_out=logtostderr=true,grpc_api_configuration=path/to/your_service.yaml:. \
      path/to/your_service.proto
    ```
@@ -99,7 +99,7 @@ The following is equivalent to the basic [usage example](usage.html) but without
    
      "github.com/golang/glog"
      "golang.org/x/net/context"
-     "github.com/partitio/grpc-gateway/runtime"
+     "github.com/partitio/micro-gateway/runtime"
      "google.golang.org/grpc"
    	
      gw "path/to/your_service_package"
@@ -141,7 +141,7 @@ Swagger generation in this step is equivalent to gateway generation. Again pass 
    ```sh
    protoc -I/usr/local/include -I. \
      -I$GOPATH/src \
-     -I$GOPATH/src/github.com/partitio/grpc-gateway/third_party/googleapis \
+     -I$GOPATH/src/github.com/partitio/micro-gateway/third_party/googleapis \
      --swagger_out=logtostderr=true,grpc_api_configuration=path/to/your_service.yaml:. \
      path/to/your_service.proto
    ```

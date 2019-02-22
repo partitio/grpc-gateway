@@ -10,7 +10,7 @@ import (
 
 	"github.com/golang/protobuf/proto"
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
-	"github.com/partitio/grpc-gateway/codegenerator"
+	"github.com/partitio/micro-gateway/codegenerator"
 )
 
 var parseReqTests = []struct {

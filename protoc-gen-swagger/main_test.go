@@ -7,7 +7,7 @@ import (
 )
 
 func TestParseReqParam(t *testing.T) {
-	
+
 	f := flag.CommandLine
 
 	// this one must be first - with no leading clearFlags call it
@@ -26,8 +26,8 @@ func TestParseReqParam(t *testing.T) {
 
 	clearFlags()
 	pkgMap = make(map[string]string)
-	expected = map[string]string{"google/api/annotations.proto": "github.com/partitio/grpc-gateway/third_party/googleapis/google/api"}
-	err = parseReqParam("allow_delete_body,allow_merge,file=./foo.pb,import_prefix=/bar/baz,Mgoogle/api/annotations.proto=github.com/partitio/grpc-gateway/third_party/googleapis/google/api", f, pkgMap)
+	expected = map[string]string{"google/api/annotations.proto": "github.com/partitio/micro-gateway/third_party/googleapis/google/api"}
+	err = parseReqParam("allow_delete_body,allow_merge,file=./foo.pb,import_prefix=/bar/baz,Mgoogle/api/annotations.proto=github.com/partitio/micro-gateway/third_party/googleapis/google/api", f, pkgMap)
 	if err != nil {
 		t.Errorf("Test 1: unexpected parse error '%v'", err)
 	}
@@ -38,15 +38,15 @@ func TestParseReqParam(t *testing.T) {
 
 	clearFlags()
 	pkgMap = make(map[string]string)
-	expected = map[string]string{"google/api/annotations.proto": "github.com/partitio/grpc-gateway/third_party/googleapis/google/api"}
-	err = parseReqParam("allow_delete_body=true,allow_merge=true,merge_file_name=test_name,file=./foo.pb,import_prefix=/bar/baz,Mgoogle/api/annotations.proto=github.com/partitio/grpc-gateway/third_party/googleapis/google/api", f, pkgMap)
+	expected = map[string]string{"google/api/annotations.proto": "github.com/partitio/micro-gateway/third_party/googleapis/google/api"}
+	err = parseReqParam("allow_delete_body=true,allow_merge=true,merge_file_name=test_name,file=./foo.pb,import_prefix=/bar/baz,Mgoogle/api/annotations.proto=github.com/partitio/micro-gateway/third_party/googleapis/google/api", f, pkgMap)
 	if err != nil {
 		t.Errorf("Test 2: unexpected parse error '%v'", err)
 	}
 	if !reflect.DeepEqual(pkgMap, expected) {
 		t.Errorf("Test 2: pkgMap parse error, expected '%v', got '%v'", expected, pkgMap)
 	}
-	checkFlags(true, true,"./foo.pb", "/bar/baz", "test_name", t, 2)
+	checkFlags(true, true, "./foo.pb", "/bar/baz", "test_name", t, 2)
 
 	clearFlags()
 	pkgMap = make(map[string]string)
@@ -58,7 +58,7 @@ func TestParseReqParam(t *testing.T) {
 	if !reflect.DeepEqual(pkgMap, expected) {
 		t.Errorf("Test 3: pkgMap parse error, expected '%v', got '%v'", expected, pkgMap)
 	}
-	checkFlags(false, false,"stdin", "", "apidocs", t, 3)
+	checkFlags(false, false, "stdin", "", "apidocs", t, 3)
 
 	clearFlags()
 	pkgMap = make(map[string]string)
@@ -82,7 +82,7 @@ func TestParseReqParam(t *testing.T) {
 	if !reflect.DeepEqual(pkgMap, expected) {
 		t.Errorf("Test 5: pkgMap parse error, expected '%v', got '%v'", expected, pkgMap)
 	}
-	checkFlags(false, false,"stdin", "", "apidocs", t, 5)
+	checkFlags(false, false, "stdin", "", "apidocs", t, 5)
 
 	clearFlags()
 	pkgMap = make(map[string]string)
@@ -94,7 +94,7 @@ func TestParseReqParam(t *testing.T) {
 	if !reflect.DeepEqual(pkgMap, expected) {
 		t.Errorf("Test 6: pkgMap parse error, expected '%v', got '%v'", expected, pkgMap)
 	}
-	checkFlags(false, false,"stdin", "", "apidocs", t, 6)
+	checkFlags(false, false, "stdin", "", "apidocs", t, 6)
 
 	clearFlags()
 	pkgMap = make(map[string]string)

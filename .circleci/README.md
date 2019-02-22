@@ -1,4 +1,4 @@
-## gRPC-Gateway CI testing setup
+## micro-gateway CI testing setup
 
 Contained within is the CI test setup for the Gateway. It runs on Circle CI.
 
@@ -7,8 +7,8 @@ Contained within is the CI test setup for the Gateway. It runs on Circle CI.
 Great, it should be as simple as thus (run from the root of the directory):
 
 ```bash
-$ docker run -v $(pwd):/go/src/github.com/partitio/grpc-gateway --rm jfbrandhorst/grpc-gateway-build-env \
-    /bin/bash -c 'cd /go/src/github.com/partitio/grpc-gateway && \
+$ docker run -v $(pwd):/go/src/github.com/partitio/micro-gateway --rm jfbrandhorst/micro-gateway-build-env \
+    /bin/bash -c 'cd /go/src/github.com/partitio/micro-gateway && \
         make realclean && \
         make examples SWAGGER_CODEGEN="${SWAGGER_CODEGEN}"'
 ```
@@ -18,5 +18,5 @@ If this has resulted in some file changes in the repo, please ensure you check t
 ### Whats up with the Dockerfile?
 
 The `Dockerfile` in this folder is used as the build environment when regenerating the files (see above).
-The canonical repository for this Dockerfile is `jfbrandhorst/grpc-gateway-build-env`. Please request access
+The canonical repository for this Dockerfile is `jfbrandhorst/micro-gateway-build-env`. Please request access
 before attempting to make any changes to the Dockerfile.

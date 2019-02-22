@@ -22,7 +22,7 @@ go_library(
         "proto_errors.go",
         "query.go",
     ],
-    importpath = "github.com/partitio/grpc-gateway/runtime",
+    importpath = "github.com/partitio/micro-gateway/runtime",
     deps = [
         "//runtime/internal:go_default_library",
         "//utilities:go_default_library",

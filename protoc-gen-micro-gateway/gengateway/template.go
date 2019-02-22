@@ -8,8 +8,8 @@ import (
 
 	"github.com/golang/glog"
 	generator2 "github.com/golang/protobuf/protoc-gen-go/generator"
-	"github.com/partitio/grpc-gateway/protoc-gen-micro-gateway/descriptor"
-	"github.com/partitio/grpc-gateway/utilities"
+	"github.com/partitio/micro-gateway/protoc-gen-micro-gateway/descriptor"
+	"github.com/partitio/micro-gateway/utilities"
 )
 
 type param struct {

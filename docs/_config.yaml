@@ -1,6 +1,6 @@
 theme: jekyll-theme-architect
 
-repository: partitio/grpc-gateway
+repository: partitio/micro-gateway
 
 collections:
   docs:
