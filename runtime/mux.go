@@ -102,6 +102,16 @@ func WithProtoErrorHandler(fn ProtoErrorHandlerFunc) ServeMuxOption {
 	}
 }
 
+//WithQueryParameterParser add custom query parameter parser
+func WithQueryParameterParser(fn QueryParameterParser) ServeMuxOption {
+	return func(_ *ServeMux) {
+		if fn == nil {
+			return
+		}
+		queryParameterParsers = append(queryParameterParsers, fn)
+	}
+}
+
 // NewServeMux returns a new ServeMux whose internal mapping is empty.
 func NewServeMux(opts ...ServeMuxOption) *ServeMux {
 	serveMux := &ServeMux{

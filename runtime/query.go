@@ -15,10 +15,31 @@ import (
 	"google.golang.org/grpc/grpclog"
 )
 
+var queryParameterParsers []QueryParameterParser
+
+// QueryParameterParser is called when query parameters are parsed into proto.Message
+// It return a map of handled kies and an error
+type QueryParameterParser = func(msg proto.Message, values url.Values) (keys map[string]bool, err error)
+
 // PopulateQueryParameters populates "values" into "msg".
 // A value is ignored if its key starts with one of the elements in "filter".
 func PopulateQueryParameters(msg proto.Message, values url.Values, filter *utilities.DoubleArray) error {
+	handled := map[string]bool{}
+	for i := range queryParameterParsers {
+		ks, err := queryParameterParsers[i](msg, values)
+		if err != nil {
+			return err
+		}
+		for k, v := range ks {
+			if v {
+				handled[k] = v
+			}
+		}
+	}
 	for key, values := range values {
+		if handled[key] {
+			continue
+		}
 		re, err := regexp.Compile("^(.*)\\[(.*)\\]$")
 		if err != nil {
 			return err
