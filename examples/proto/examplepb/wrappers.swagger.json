@@ -1,0 +1,466 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "examples/proto/examplepb/wrappers.proto",
+    "version": "version not set"
+  },
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/example/wrappers": {
+      "post": {
+        "operationId": "Create",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/examplepbWrappers"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/examplepbWrappers"
+            }
+          }
+        ],
+        "tags": [
+          "WrappersService"
+        ]
+      }
+    },
+    "/v1/testBool": {
+      "post": {
+        "operationId": "CreateBoolValue",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "boolean",
+              "format": "boolean"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "boolean",
+              "format": "boolean"
+            }
+          }
+        ],
+        "tags": [
+          "WrappersService"
+        ]
+      }
+    },
+    "/v1/testBytes": {
+      "post": {
+        "operationId": "CreateBytesValue",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "string",
+              "format": "byte"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "byte"
+            }
+          }
+        ],
+        "tags": [
+          "WrappersService"
+        ]
+      }
+    },
+    "/v1/testDouble": {
+      "post": {
+        "operationId": "CreateDoubleValue",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          }
+        ],
+        "tags": [
+          "WrappersService"
+        ]
+      }
+    },
+    "/v1/testEmpty": {
+      "post": {
+        "operationId": "CreateEmpty",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "properties": {}
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "properties": {}
+            }
+          }
+        ],
+        "tags": [
+          "WrappersService"
+        ]
+      }
+    },
+    "/v1/testFloat": {
+      "post": {
+        "operationId": "CreateFloatValue",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "number",
+              "format": "float"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "float"
+            }
+          }
+        ],
+        "tags": [
+          "WrappersService"
+        ]
+      }
+    },
+    "/v1/testInt32": {
+      "post": {
+        "operationId": "CreateInt32Value",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "tags": [
+          "WrappersService"
+        ]
+      }
+    },
+    "/v1/testInt64": {
+      "post": {
+        "operationId": "CreateInt64Value",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          }
+        ],
+        "tags": [
+          "WrappersService"
+        ]
+      }
+    },
+    "/v1/testString": {
+      "post": {
+        "operationId": "CreateStringValue",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "WrappersService"
+        ]
+      }
+    },
+    "/v1/testUint32": {
+      "post": {
+        "operationId": "CreateUInt32Value",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "tags": [
+          "WrappersService"
+        ]
+      }
+    },
+    "/v1/testUint64": {
+      "post": {
+        "operationId": "CreateUInt64Value",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "string",
+              "format": "uint64"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uint64"
+            }
+          }
+        ],
+        "tags": [
+          "WrappersService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "examplepbWrappers": {
+      "type": "object",
+      "properties": {
+        "string_value": {
+          "type": "string"
+        },
+        "int32_value": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "int64_value": {
+          "type": "string",
+          "format": "int64"
+        },
+        "float_value": {
+          "type": "number",
+          "format": "float"
+        },
+        "double_value": {
+          "type": "number",
+          "format": "double"
+        },
+        "bool_value": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "uint32_value": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "uint64_value": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "bytes_value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "protobufBoolValue": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "The bool value."
+        }
+      },
+      "description": "Wrapper message for `bool`.\n\nThe JSON representation for `BoolValue` is JSON `true` and `false`."
+    },
+    "protobufBytesValue": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string",
+          "format": "byte",
+          "description": "The bytes value."
+        }
+      },
+      "description": "Wrapper message for `bytes`.\n\nThe JSON representation for `BytesValue` is JSON string."
+    },
+    "protobufDoubleValue": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "number",
+          "format": "double",
+          "description": "The double value."
+        }
+      },
+      "description": "Wrapper message for `double`.\n\nThe JSON representation for `DoubleValue` is JSON number."
+    },
+    "protobufEmpty": {
+      "type": "object",
+      "description": "service Foo {\n      rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty);\n    }\n\nThe JSON representation for `Empty` is empty JSON object `{}`.",
+      "title": "A generic empty message that you can re-use to avoid defining duplicated\nempty messages in your APIs. A typical example is to use it as the request\nor the response type of an API method. For instance:"
+    },
+    "protobufFloatValue": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "number",
+          "format": "float",
+          "description": "The float value."
+        }
+      },
+      "description": "Wrapper message for `float`.\n\nThe JSON representation for `FloatValue` is JSON number."
+    },
+    "protobufInt32Value": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "integer",
+          "format": "int32",
+          "description": "The int32 value."
+        }
+      },
+      "description": "Wrapper message for `int32`.\n\nThe JSON representation for `Int32Value` is JSON number."
+    },
+    "protobufInt64Value": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string",
+          "format": "int64",
+          "description": "The int64 value."
+        }
+      },
+      "description": "Wrapper message for `int64`.\n\nThe JSON representation for `Int64Value` is JSON string."
+    },
+    "protobufStringValue": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string",
+          "description": "The string value."
+        }
+      },
+      "description": "Wrapper message for `string`.\n\nThe JSON representation for `StringValue` is JSON string."
+    },
+    "protobufUInt32Value": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "integer",
+          "format": "int64",
+          "description": "The uint32 value."
+        }
+      },
+      "description": "Wrapper message for `uint32`.\n\nThe JSON representation for `UInt32Value` is JSON number."
+    },
+    "protobufUInt64Value": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string",
+          "format": "uint64",
+          "description": "The uint64 value."
+        }
+      },
+      "description": "Wrapper message for `uint64`.\n\nThe JSON representation for `UInt64Value` is JSON string."
+    }
+  }
+}

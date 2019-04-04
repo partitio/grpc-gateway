@@ -200,7 +200,7 @@ message ABitOfEverything {
 	repeated NumericEnum repeated_enum_value = 28;
 
 	// This comment will not appear, MimicObject description will be used instead.
-	MimicObjectHidden mimic_string = 30;
+	MimicObjectHidden mimic_string = 33;
 }
 
 // ABitOfEverythingRepeated is used to validate repeated path parameter functionality
