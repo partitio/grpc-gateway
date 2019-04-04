@@ -41,8 +41,16 @@ type Registry struct {
 	// externalHttpRules is a mapping from fully qualified service method names to additional HttpRules applicable besides the ones found in annotations.
 	externalHTTPRules map[string][]*annotations.HttpRule
 
+	// atlasPatch ...
+	atlasPatch bool
 	// allowMerge generation one swagger file out of multiple protos
 	allowMerge bool
+
+	//withPrivateOperations if true exclude all operations with tag "private"
+	withPrivateOperations bool
+
+	// withCustomAnnotations this flag provide you possibility to use custom annotations
+	withCustomAnnotations bool
 
 	// mergeFileName target swagger file name after merge
 	mergeFileName string
@@ -337,6 +345,33 @@ func (r *Registry) IsAllowMerge() bool {
 func (r *Registry) SetMergeFileName(mergeFileName string) {
 	r.mergeFileName = mergeFileName
 }
+
+// IsAtlasPatch whether generation is followed by atlas-patch changes.
+func (r *Registry) IsAtlasPatch() bool {
+	return r.atlasPatch
+}
+
+func (r *Registry) SetAtlasPatch(atlas bool) {
+	r.atlasPatch = atlas
+}
+
+func (r *Registry) SetWithCustomAnnotations(custom bool) {
+	r.withCustomAnnotations = custom
+}
+
+func (r *Registry) IsWithCustomAnnotations() bool {
+	return r.withCustomAnnotations
+}
+
+// IsWithPrivateOperations if true exclude all operations with tag "private"
+func (r *Registry) IsWithPrivateOperations() bool {
+	return r.withPrivateOperations
+}
+
+func (r *Registry) SetWithPrivateOperations(withPrivateOperations bool) {
+	r.withPrivateOperations = withPrivateOperations
+}
+
 
 // SetAllowRepeatedFieldsInBody controls whether repeated field can be used
 // in `body` and `response_body` (`google.api.http` annotation option) field path or not

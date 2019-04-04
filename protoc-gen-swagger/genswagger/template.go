@@ -97,6 +97,26 @@ func queryParams(message *descriptor.Message, field *descriptor.Field, prefix st
 			return nil, nil
 		}
 	}
+
+	if msg, err := reg.LookupMsg("", field.GetTypeName()); err == nil && mimicsPrimitiveType(msg) {
+		s, err := extractSchemaOptionFromMessageDescriptor(msg.DescriptorProto)
+		if err != nil {
+			return nil, err
+		}
+
+		t, f := protoJSONSchemaTypeToFormat(s.GetJsonSchema().GetType())
+
+		param := swaggerParameterObject{
+			Name:        field.GetName(),
+			In:          "query",
+			Type:        t,
+			Format:      f,
+			Description: s.GetJsonSchema().GetDescription(),
+		}
+
+		return []swaggerParameterObject{param}, nil
+	}
+
 	schema := schemaOfField(field, reg, nil)
 	fieldType := field.GetTypeName()
 	if message.File != nil {
@@ -176,6 +196,7 @@ func findServicesMessagesAndEnumerations(s []*descriptor.Service, reg *descripto
 				}
 			}
 			findNestedMessagesAndEnumerations(meth.RequestType, reg, m, e)
+			m[fullyQualifiedNameToSwaggerName(meth.ResponseType.FQMN(), reg)] = meth.ResponseType
 
 			if !skipRenderingRef(meth.ResponseType.FQMN()) {
 				m[fullyQualifiedNameToSwaggerName(meth.ResponseType.FQMN(), reg)] = meth.ResponseType
@@ -202,11 +223,34 @@ func findNestedMessagesAndEnumerations(message *descriptor.Message, reg *descrip
 					e[fieldType] = enum
 					continue
 				}
+				if mimicsPrimitiveType(msg) {
+					continue
+				}
 				m[fieldType] = msg
 				findNestedMessagesAndEnumerations(msg, reg, m, e)
 			}
 		}
 	}
+}
+
+func mimicsPrimitiveType(message *descriptor.Message) bool {
+	s, err := extractSchemaOptionFromMessageDescriptor(message.DescriptorProto)
+	if err != nil {
+		return false
+	}
+
+	if _, ok := wktSchemas[s.GetJsonSchema().GetRef()]; ok {
+		return true
+	}
+
+	t, _ := protoJSONSchemaTypeToFormat(s.GetJsonSchema().GetType())
+
+	// FIXME: should array be treated as a primitive type?
+	if t == "" || t == "object" || t == "unknown" || t == "array" {
+		return false
+	}
+
+	return true
 }
 
 func skipRenderingRef(refName string) bool {
@@ -270,9 +314,11 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 
 		for _, f := range msg.Fields {
 			fieldValue := schemaOfField(f, reg, customRefs)
-			comments := fieldProtoComments(reg, msg, f)
-			if err := updateSwaggerDataFromComments(&fieldValue, comments); err != nil {
-				panic(err)
+			if fieldValue.Description == "" {
+				comments := fieldProtoComments(reg, msg, f)
+				if err := updateSwaggerDataFromComments(&fieldValue, comments); err != nil {
+					panic(err)
+				}
 			}
 
 			kv := keyVal{Value: fieldValue}
@@ -319,10 +365,28 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) s
 	case pbdescriptor.FieldDescriptorProto_TYPE_ENUM, pbdescriptor.FieldDescriptorProto_TYPE_MESSAGE, pbdescriptor.FieldDescriptorProto_TYPE_GROUP:
 		if wktSchema, ok := wktSchemas[fd.GetTypeName()]; ok {
 			core = wktSchema
+		} else if msg, err := reg.LookupMsg("", fd.GetTypeName()); err == nil && mimicsPrimitiveType(msg) {
+			s, _ := extractSchemaOptionFromMessageDescriptor(msg.DescriptorProto)
+			t, f := protoJSONSchemaTypeToFormat(s.GetJsonSchema().GetType())
+			if aggregate == array {
+				core = schemaCore{
+					Type: "array",
+					Format: f,
+					Items: &swaggerItemsObject{
+						Type:t,
+					},
+				}
+			}else {
+				core = schemaCore{
+					Type:   t,
+					Format: f,
+				}
+			}
 
 			if fd.GetTypeName() == ".google.protobuf.Empty" {
 				props = &swaggerSchemaObjectProperties{}
 			}
+			return swaggerSchemaObject{schemaCore: core, Description: s.GetJsonSchema().GetDescription()}
 		} else {
 			core = schemaCore{
 				Ref: "#/definitions/" + fullyQualifiedNameToSwaggerName(fd.GetTypeName(), reg),
@@ -343,12 +407,17 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) s
 
 	switch aggregate {
 	case array:
-		return swaggerSchemaObject{
+		ret := swaggerSchemaObject{
 			schemaCore: schemaCore{
 				Type:  "array",
 				Items: (*swaggerItemsObject)(&core),
 			},
 		}
+
+		if j, err := extractJSONSchemaFromFieldDescriptor(fd); err == nil {
+			updateSwaggerObjectFromJSONSchema(&ret, j, reg)
+		}
+		return ret
 	case object:
 		return swaggerSchemaObject{
 			schemaCore: schemaCore{
@@ -362,7 +431,7 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) s
 			Properties: props,
 		}
 		if j, err := extractJSONSchemaFromFieldDescriptor(fd); err == nil {
-			updateSwaggerObjectFromJSONSchema(&ret, j)
+			updateSwaggerObjectFromJSONSchema(&ret, j, reg)
 		}
 		return ret
 	}
@@ -558,6 +627,15 @@ func templateToSwaggerPath(path string) string {
 	// memory.
 	re := regexp.MustCompile("{([a-zA-Z][a-zA-Z0-9_.]*).*}")
 	for index, part := range parts {
+		if strings.Contains(part, "=") && !strings.Contains(part, "*"){
+			v := strings.Split(strings.TrimSuffix(strings.TrimPrefix(part, "{"), "}"), "=")
+			if len(v) == 2 {
+				part = v[1]
+				parts[index] = part
+				continue
+			}
+		}
+
 		// If part is a resource name such as "parent", "name", "user.name", the format info must be retained.
 		prefix := re.ReplaceAllString(part, "$1")
 		if isResourceName(prefix) {
@@ -1427,7 +1505,7 @@ func protoJSONSchemaToSwaggerSchemaCore(j *swagger_options.JSONSchema, reg *desc
 	return ret
 }
 
-func updateSwaggerObjectFromJSONSchema(s *swaggerSchemaObject, j *swagger_options.JSONSchema) {
+func updateSwaggerObjectFromJSONSchema(s *swaggerSchemaObject, j *swagger_options.JSONSchema, reg *descriptor.Registry) {
 	s.Title = j.GetTitle()
 	s.Description = j.GetDescription()
 	s.MultipleOf = j.GetMultipleOf()
@@ -1444,6 +1522,33 @@ func updateSwaggerObjectFromJSONSchema(s *swaggerSchemaObject, j *swagger_option
 	s.MaxProperties = j.GetMaxProperties()
 	s.MinProperties = j.GetMinProperties()
 	s.Required = j.GetRequired()
+	s.ReadOnly = j.GetReadOnly()
+
+
+	if arr := j.GetArray(); len(arr) > 0 {
+		s.Type = "array"
+		for _, e := range arr {
+			if v, ok := wktSchemas[e]; ok {
+				s.Items = (*swaggerItemsObject)(&v)
+				s.Ref = ""
+				break
+			} else if swaggerName := fullyQualifiedNameToSwaggerName(e, reg); swaggerName != "" {
+				s.Items = (*swaggerItemsObject)(&schemaCore{Type: "object", Ref: "#/definitions/" + swaggerName})
+				s.Ref = ""
+				break
+			} else {
+				panic("Must be either valid reference or primitive type")
+			}
+		}
+	} else if t, f := protoJSONSchemaTypeToFormat(j.GetType()); t != "" {
+		s.Type = t
+		s.Format = f
+	} else if j.GetRef() != "" {
+		ref := fullyQualifiedNameToSwaggerName(j.GetRef(), reg)
+		if ref != "" {
+			s.Ref = "#/definitions/" + ref
+		}
+	}
 }
 
 func swaggerSchemaFromProtoSchema(s *swagger_options.Schema, reg *descriptor.Registry, refs refMap) swaggerSchemaObject {
@@ -1452,7 +1557,7 @@ func swaggerSchemaFromProtoSchema(s *swagger_options.Schema, reg *descriptor.Reg
 	}
 
 	ret.schemaCore = protoJSONSchemaToSwaggerSchemaCore(s.GetJsonSchema(), reg, refs)
-	updateSwaggerObjectFromJSONSchema(&ret, s.GetJsonSchema())
+	updateSwaggerObjectFromJSONSchema(&ret, s.GetJsonSchema(), reg)
 
 	return ret
 }
@@ -1516,7 +1621,7 @@ func addCustomRefs(d swaggerDefinitionsObject, reg *descriptor.Registry, refs re
 			continue
 		}
 		msg, err := reg.LookupMsg("", ref)
-		if err == nil {
+		if err == nil || !mimicsPrimitiveType(msg) {
 			msgMap[fullyQualifiedNameToSwaggerName(ref, reg)] = msg
 			continue
 		}

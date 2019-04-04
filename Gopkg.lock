@@ -272,6 +272,7 @@
     "stats",
     "status",
     "tap",
+    "transport"
   ]
   pruneopts = "UT"
   revision = "a02b0774206b209466313a0b525d2c738fe407eb"
