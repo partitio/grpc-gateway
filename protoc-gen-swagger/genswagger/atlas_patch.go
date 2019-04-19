@@ -138,8 +138,13 @@ The service-defined string used to identify a page of resources. A null value in
 					default:
 					}
 					// Replace resource_id with id
-				} else if strings.HasSuffix(param.Name, "id.resource_id") || strings.HasSuffix(param.Name, ".id") {
+				} else if strings.HasSuffix(param.Name, "id.resource_id") ||
+					strings.HasSuffix(param.Name, ".id") ||
+					strings.HasSuffix(param.Name, ".id.value") {
 					param.Name = "id"
+					fixedParams = append(fixedParams, param)
+				} else if strings.HasSuffix(param.Name, ".value"){
+					param.Name = strings.TrimSuffix(param.Name, ".value")
 					fixedParams = append(fixedParams, param)
 				} else {
 					// Gather ref in body.
