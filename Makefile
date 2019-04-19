@@ -133,7 +133,7 @@ generate: $(RUNTIME_GO)
 .SUFFIXES: .go .proto
 
 $(GO_PLUGIN):
-	dep ensure -vendor-only
+	go mod vendor
 	go build -o $@ ./vendor/$(GO_PLUGIN_PKG)
 
 $(MICRO_PLUGIN):
