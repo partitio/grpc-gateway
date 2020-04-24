@@ -27,6 +27,7 @@ type ServeMux struct {
 	outgoingHeaderMatcher  HeaderMatcherFunc
 	metadataAnnotators     []func(context.Context, *http.Request) metadata.Metadata
 	protoErrorHandler      ProtoErrorHandlerFunc
+	lastMatchWins             bool
 }
 
 // ServeMuxOption is an option that can be given to a ServeMux on construction.
@@ -102,13 +103,22 @@ func WithProtoErrorHandler(fn ProtoErrorHandlerFunc) ServeMuxOption {
 	}
 }
 
-//WithQueryParameterParser add custom query parameter parser
+// WithQueryParameterParser add custom query parameter parser
 func WithQueryParameterParser(fn QueryParameterParser) ServeMuxOption {
 	return func(_ *ServeMux) {
 		if fn == nil {
 			return
 		}
 		queryParameterParsers = append(queryParameterParsers, fn)
+	}
+}
+
+// WithLastMatchWins returns a ServeMuxOption that will enable "last
+// match wins" behavior, where if multiple path patterns match a
+// request path, the last one defined in the .proto file will be used.
+func WithLastMatchWins() ServeMuxOption {
+	return func(serveMux *ServeMux) {
+		serveMux.lastMatchWins = true
 	}
 }
 
@@ -151,7 +161,11 @@ func NewServeMux(opts ...ServeMuxOption) *ServeMux {
 
 // Handle associates "h" to the pair of HTTP method and path pattern.
 func (s *ServeMux) Handle(meth string, pat Pattern, h HandlerFunc) {
-	s.handlers[meth] = append(s.handlers[meth], handler{pat: pat, h: h})
+	if s.lastMatchWins {
+		s.handlers[meth] = append([]handler{{pat: pat, h: h}}, s.handlers[meth]...)
+	} else {
+		s.handlers[meth] = append(s.handlers[meth], handler{pat: pat, h: h})
+	}
 }
 
 // ServeHTTP dispatches the request to the first handler whose pattern matches to r.Method and r.Path.
