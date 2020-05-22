@@ -11,8 +11,12 @@ import (
 	"time"
 
 	"github.com/golang/protobuf/proto"
-	"github.com/partitio/micro-gateway/utilities"
+	"github.com/golang/protobuf/ptypes/duration"
+	"github.com/golang/protobuf/ptypes/timestamp"
+	"github.com/golang/protobuf/ptypes/wrappers"
 	"google.golang.org/grpc/grpclog"
+
+	"github.com/partitio/micro-gateway/utilities"
 )
 
 var queryParameterParsers []QueryParameterParser
@@ -223,89 +227,78 @@ func populateField(f reflect.Value, value string, props *proto.Properties) error
 	i := f.Addr().Interface()
 
 	// Handle protobuf well known types
-	type wkt interface {
-		XXX_WellKnownType() string
-	}
-	if wkt, ok := i.(wkt); ok {
-		switch wkt.XXX_WellKnownType() {
-		case "Timestamp":
-			if value == "null" {
-				f.Field(0).SetInt(0)
-				f.Field(1).SetInt(0)
-				return nil
-			}
-
-			t, err := time.Parse(time.RFC3339Nano, value)
-			if err != nil {
-				return fmt.Errorf("bad Timestamp: %v", err)
-			}
-			f.Field(0).SetInt(int64(t.Unix()))
-			f.Field(1).SetInt(int64(t.Nanosecond()))
-			return nil
-		case "Duration":
-			if value == "null" {
-				f.Field(0).SetInt(0)
-				f.Field(1).SetInt(0)
-				return nil
-			}
-			d, err := time.ParseDuration(value)
-			if err != nil {
-				return fmt.Errorf("bad Duration: %v", err)
-			}
-
-			ns := d.Nanoseconds()
-			s := ns / 1e9
-			ns %= 1e9
-			f.Field(0).SetInt(s)
-			f.Field(1).SetInt(ns)
-			return nil
-		case "DoubleValue":
-			fallthrough
-		case "FloatValue":
-			float64Val, err := strconv.ParseFloat(value, 64)
-			if err != nil {
-				return fmt.Errorf("bad DoubleValue: %s", value)
-			}
-			f.Field(0).SetFloat(float64Val)
-			return nil
-		case "Int64Value":
-			fallthrough
-		case "Int32Value":
-			int64Val, err := strconv.ParseInt(value, 10, 64)
-			if err != nil {
-				return fmt.Errorf("bad DoubleValue: %s", value)
-			}
-			f.Field(0).SetInt(int64Val)
-			return nil
-		case "UInt64Value":
-			fallthrough
-		case "UInt32Value":
-			uint64Val, err := strconv.ParseUint(value, 10, 64)
-			if err != nil {
-				return fmt.Errorf("bad DoubleValue: %s", value)
-			}
-			f.Field(0).SetUint(uint64Val)
-			return nil
-		case "BoolValue":
-			if value == "true" {
-				f.Field(0).SetBool(true)
-			} else if value == "false" {
-				f.Field(0).SetBool(false)
-			} else {
-				return fmt.Errorf("bad BoolValue: %s", value)
-			}
-			return nil
-		case "StringValue":
-			f.Field(0).SetString(value)
-			return nil
-		case "BytesValue":
-			bytesVal, err := base64.StdEncoding.DecodeString(value)
-			if err != nil {
-				return fmt.Errorf("bad BytesValue: %s", value)
-			}
-			f.Field(0).SetBytes(bytesVal)
+	switch i.(type) {
+	case *timestamp.Timestamp:
+		if value == "null" {
+			f.Field(0).SetInt(0)
+			f.Field(1).SetInt(0)
 			return nil
 		}
+
+		t, err := time.Parse(time.RFC3339Nano, value)
+		if err != nil {
+			return fmt.Errorf("bad Timestamp: %v", err)
+		}
+		f.Field(0).SetInt(int64(t.Unix()))
+		f.Field(1).SetInt(int64(t.Nanosecond()))
+		return nil
+	case *duration.Duration:
+		if value == "null" {
+			f.Field(0).SetInt(0)
+			f.Field(1).SetInt(0)
+			return nil
+		}
+		d, err := time.ParseDuration(value)
+		if err != nil {
+			return fmt.Errorf("bad Duration: %v", err)
+		}
+
+		ns := d.Nanoseconds()
+		s := ns / 1e9
+		ns %= 1e9
+		f.Field(0).SetInt(s)
+		f.Field(1).SetInt(ns)
+		return nil
+	case *wrappers.DoubleValue, *wrappers.FloatValue:
+		float64Val, err := strconv.ParseFloat(value, 64)
+		if err != nil {
+			return fmt.Errorf("bad DoubleValue: %s", value)
+		}
+		f.Field(0).SetFloat(float64Val)
+		return nil
+	case *wrappers.Int64Value, *wrappers.Int32Value:
+		int64Val, err := strconv.ParseInt(value, 10, 64)
+		if err != nil {
+			return fmt.Errorf("bad DoubleValue: %s", value)
+		}
+		f.Field(0).SetInt(int64Val)
+		return nil
+	case *wrappers.UInt64Value, *wrappers.UInt32Value:
+		uint64Val, err := strconv.ParseUint(value, 10, 64)
+		if err != nil {
+			return fmt.Errorf("bad DoubleValue: %s", value)
+		}
+		f.Field(0).SetUint(uint64Val)
+		return nil
+	case *wrappers.BoolValue:
+		if value == "true" {
+			f.Field(0).SetBool(true)
+		} else if value == "false" {
+			f.Field(0).SetBool(false)
+		} else {
+			return fmt.Errorf("bad BoolValue: %s", value)
+		}
+		return nil
+	case *wrappers.StringValue:
+		f.Field(0).SetString(value)
+		return nil
+	case *wrappers.BytesValue:
+		bytesVal, err := base64.StdEncoding.DecodeString(value)
+		if err != nil {
+			return fmt.Errorf("bad BytesValue: %s", value)
+		}
+		f.Field(0).SetBytes(bytesVal)
+		return nil
 	}
 
 	// Handle google well known types
