@@ -227,11 +227,11 @@ func populateField(f reflect.Value, value string, props *proto.Properties) error
 	i := f.Addr().Interface()
 
 	// Handle protobuf well known types
-	switch i.(type) {
+	switch w := i.(type) {
 	case *timestamp.Timestamp:
 		if value == "null" {
-			f.Field(0).SetInt(0)
-			f.Field(1).SetInt(0)
+			w.Seconds = 0
+			w.Nanos = 0
 			return nil
 		}
 
@@ -239,13 +239,13 @@ func populateField(f reflect.Value, value string, props *proto.Properties) error
 		if err != nil {
 			return fmt.Errorf("bad Timestamp: %v", err)
 		}
-		f.Field(0).SetInt(int64(t.Unix()))
-		f.Field(1).SetInt(int64(t.Nanosecond()))
+		w.Seconds = t.Unix()
+		w.Nanos = int32(t.Nanosecond())
 		return nil
 	case *duration.Duration:
 		if value == "null" {
-			f.Field(0).SetInt(0)
-			f.Field(1).SetInt(0)
+			w.Seconds = 0
+			w.Nanos = 0
 			return nil
 		}
 		d, err := time.ParseDuration(value)
@@ -256,48 +256,69 @@ func populateField(f reflect.Value, value string, props *proto.Properties) error
 		ns := d.Nanoseconds()
 		s := ns / 1e9
 		ns %= 1e9
-		f.Field(0).SetInt(s)
-		f.Field(1).SetInt(ns)
+		w.Seconds = s
+		w.Nanos = int32(ns)
 		return nil
-	case *wrappers.DoubleValue, *wrappers.FloatValue:
+	case *wrappers.DoubleValue:
 		float64Val, err := strconv.ParseFloat(value, 64)
 		if err != nil {
 			return fmt.Errorf("bad DoubleValue: %s", value)
 		}
-		f.Field(0).SetFloat(float64Val)
+		w.Value = float64Val
 		return nil
-	case *wrappers.Int64Value, *wrappers.Int32Value:
-		int64Val, err := strconv.ParseInt(value, 10, 64)
+	case *wrappers.FloatValue:
+		val, err := strconv.ParseFloat(value, 32)
 		if err != nil {
 			return fmt.Errorf("bad DoubleValue: %s", value)
 		}
-		f.Field(0).SetInt(int64Val)
+		w.Value = float32(val)
 		return nil
-	case *wrappers.UInt64Value, *wrappers.UInt32Value:
-		uint64Val, err := strconv.ParseUint(value, 10, 64)
+	case *wrappers.Int64Value:
+		val, err := strconv.ParseInt(value, 10, 64)
 		if err != nil {
 			return fmt.Errorf("bad DoubleValue: %s", value)
 		}
-		f.Field(0).SetUint(uint64Val)
+		w.Value = val
+		return nil
+	case *wrappers.Int32Value:
+		val, err := strconv.ParseInt(value, 10, 32)
+		if err != nil {
+			return fmt.Errorf("bad DoubleValue: %s", value)
+		}
+		w.Value = int32(val)
+		return nil
+	case *wrappers.UInt64Value:
+		val, err := strconv.ParseUint(value, 10, 64)
+		if err != nil {
+			return fmt.Errorf("bad DoubleValue: %s", value)
+		}
+		w.Value = val
+		return nil
+	case *wrappers.UInt32Value:
+		val, err := strconv.ParseUint(value, 10, 32)
+		if err != nil {
+			return fmt.Errorf("bad DoubleValue: %s", value)
+		}
+		w.Value = uint32(val)
 		return nil
 	case *wrappers.BoolValue:
 		if value == "true" {
-			f.Field(0).SetBool(true)
+			w.Value = true
 		} else if value == "false" {
-			f.Field(0).SetBool(false)
+			w.Value = false
 		} else {
 			return fmt.Errorf("bad BoolValue: %s", value)
 		}
 		return nil
 	case *wrappers.StringValue:
-		f.Field(0).SetString(value)
+		w.Value = value
 		return nil
 	case *wrappers.BytesValue:
 		bytesVal, err := base64.StdEncoding.DecodeString(value)
 		if err != nil {
 			return fmt.Errorf("bad BytesValue: %s", value)
 		}
-		f.Field(0).SetBytes(bytesVal)
+		w.Value = bytesVal
 		return nil
 	}
 
