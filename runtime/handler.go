@@ -8,7 +8,7 @@ import (
 	"context"
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes/any"
-	"github.com/micro/go-micro/metadata"
+	"github.com/micro/go-micro/v2/metadata"
 	"github.com/partitio/micro-gateway/runtime/internal"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"

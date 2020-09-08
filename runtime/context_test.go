@@ -3,7 +3,7 @@ package runtime_test
 import (
 	"context"
 	"encoding/base64"
-	"github.com/micro/go-micro/metadata"
+	"github.com/micro/go-micro/v2/metadata"
 	"github.com/partitio/micro-gateway/runtime"
 	"net/http"
 	"reflect"

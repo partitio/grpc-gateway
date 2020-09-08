@@ -1,6 +1,6 @@
 required = [
   "github.com/golang/protobuf/protoc-gen-go",
-  "github.com/micro/protoc-gen-micro",
+  "github.com/micro/micro/v2/cmd/protoc-gen-micro",
 ]
 
 [prune]

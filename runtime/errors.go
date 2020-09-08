@@ -7,7 +7,7 @@ import (
 
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes/any"
-	"github.com/micro/go-micro/metadata"
+	"github.com/micro/go-micro/v2/metadata"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/grpc/status"
